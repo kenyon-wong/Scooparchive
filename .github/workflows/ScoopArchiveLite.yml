@@ -1,0 +1,53 @@
+name: 🔨 Scoop Archive Lite
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        mkdir "C:\00PackageManager\"
+        $env:SCOOP='C:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: 'Cache Scoop Packages'
+      uses: actions/cache@v4
+      with:
+        path: C:\00PackageManager\Scoop\cache
+        key: ${{ runner.os }}-scoop-cache
+
+    - name: 'Install Required Tools'
+      shell: pwsh 
+      run: |
+        scoop install git aria2 sudo 7zip biome jq vim curl wget base64 gawk grep sed cwrsync cacert yq
+        scoop cache rm *
+
+    - name: 'Clone CodeQL Repository'
+      shell: pwsh
+      run: |
+        git clone --single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout https://github.com/github/codeql.git C:\00PackageManager\codeqlRules
+        cd C:\00PackageManager\codeqlRules
+
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -tzip C:\00PackageManager.zip C:\00PackageManager\*
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: 00PackageManager
+        path: C:\00PackageManager.zip
