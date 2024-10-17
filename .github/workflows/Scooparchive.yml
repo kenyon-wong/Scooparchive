@@ -43,6 +43,7 @@ jobs:
         scoop install -k dupeGuru dismplusplus renamer everything powertoys
         scoop install -k keepassxc kubectl
         scoop install -k idea-ultimate jadx
+        scoop install -k python
         scoop cleanup *
         scoop cache rm *
         scoop cleanup -k *
