@@ -55,7 +55,7 @@ jobs:
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -mx9 -t7z 'C:\00PackageManager.7z' 'C:\00PackageManager\*
+        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -mx9 -t7z 'C:\00PackageManager.7z' 'C:\00PackageManager\*'
         & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' l 'C:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
