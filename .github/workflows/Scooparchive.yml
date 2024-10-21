@@ -32,7 +32,7 @@ jobs:
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
-        scoop install -k git aria2 sudo 7zip biome jq yq vim curl wget base64 gawk grep sed cwrsync cacert
+        scoop install -k git aria2 sudo 7zip biome jq yq vim curl wget base64 gawk grep sed cwrsync cacert openssl
         scoop install -k liberica11-full-jdk liberica17-full-jdk liberica-full-jdk gradle maven jenv idea-ultimate jadx
         scoop install -k python
         scoop install -k codeql
