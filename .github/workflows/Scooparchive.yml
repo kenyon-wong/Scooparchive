@@ -50,6 +50,7 @@ jobs:
       shell: pwsh
       run: |
         git clone --depth 1 https://github.com/github/codeql.git C:\00PackageManager\CodeqlRules
+        git clone --depth 1 https://github.com/github/vscode-codeql.git C:\00PackageManager\vscode-codeql
         tree /f C:\00PackageManager\codeqlRules
 
     - name: 'Compress Scoop Directory'
