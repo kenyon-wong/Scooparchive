@@ -41,11 +41,12 @@ jobs:
     - name: 'Downloads Pip Packages'
       shell: pwsh
       run: |
-        C:\00PackageManager\Scoop\apps\python\current\python -m pip install --upgrade pip
-        C:\00PackageManager\Scoop\apps\python\current\python -m pip -V
-        C:\00PackageManager\Scoop\apps\python\current\python -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl rncryptor pandas requests pycryptodome beautifulsoup4 
-        C:\00PackageManager\Scoop\apps\python\current\python -m pip install pathlib colorama collections subprocess
-        C:\00PackageManager\Scoop\apps\python\current\python -m pip freeze
+        $env:SCOOPpy='C:\00PackageManager\Scoop\apps\python\current\python.exe'
+        & $env:SCOOPpy -m pip install --upgrade pip
+        & $env:SCOOPpy -m pip -V
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl rncryptor pandas requests pycryptodome beautifulsoup4 
+        & $env:SCOOPpy -m pip install pathlib colorama collections subprocess
+        & $env:SCOOPpy -m pip freeze
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
