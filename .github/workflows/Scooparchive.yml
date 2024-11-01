@@ -53,8 +53,12 @@ jobs:
         $env:SCOOPpy='C:\00PackageManager\Scoop\apps\python\current\python.exe'
         & $env:SCOOPpy -m pip install --upgrade pip
         & $env:SCOOPpy -m pip -V
-        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl 
-        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
+        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
+        git clone https://github.com/r0oth3x49/ghauri.git --depth 1
+        cd ghauri
+        & $env:SCOOPpy -m pip install --upgrade -r requirements.txt
+        & $env:SCOOPpy setup.py install
         & $env:SCOOPpy -m pip freeze
 
     - name: 'Clone CodeQL Repository'
