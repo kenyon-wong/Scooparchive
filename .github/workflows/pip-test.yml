@@ -38,11 +38,12 @@ jobs:
         scoop cache rm *
         scoop cleanup -k *
 
-    - name: 'Downloads pip Packages'
+    - name: 'Downloads Pip Packages'
       shell: pwsh
       run: |
         python -m pip install --upgrade pip
-        pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl rncryptor
+        pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl rncryptor pandas requests pycryptodome beautifulsoup4 
+        pip install pathlib colorama collections subprocess
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
