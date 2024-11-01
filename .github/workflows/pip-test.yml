@@ -41,6 +41,7 @@ jobs:
     - name: 'Downloads pip Packages'
       shell: pwsh
       run: |
+        python -m pip install --upgrade pip
         pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl rncryptor
 
     - name: 'Compress Scoop Directory'
