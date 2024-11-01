@@ -23,12 +23,6 @@ jobs:
         
         echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
 
-    - name: 'Cache Scoop Packages'
-      uses: actions/cache@v4
-      with:
-        path: C:\00PackageManager\Scoop\cache
-        key: ${{ runner.os }}-scoop-cache
-
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
