@@ -74,3 +74,5 @@ jobs:
       with:
         name: Scoop-00PackageManager
         path: C:\00PackageManager.7z
+        retention-days: 3
+        ompression-level: 0
