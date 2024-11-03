@@ -35,7 +35,7 @@ jobs:
         scoop install -k sublime-text vscode
         scoop install -k windowsdesktop-runtime-lts windows-terminal
         scoop install -k firefox googlechrome
-        scoop install -k keepassxc openark kubectl sslscan sqlitestudio
+        scoop install -k keepassxc openark kubectl sslscan sqlitestudio keepass-plugin-keepassrpc
         scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste vncviewer sysinternals
         scoop cleanup *
         scoop cache rm *
