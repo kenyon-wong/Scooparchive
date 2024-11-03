@@ -32,7 +32,7 @@ jobs:
         scoop install -k python
         scoop install -k codeql osv-scanner
         scoop install -k burp-suite-pro-np
-        scoop install -k sublime-text vscode
+        scoop install -k sublime-text vscode redis-desktop-manager
         scoop install -k windowsdesktop-runtime-lts windows-terminal
         scoop install -k firefox googlechrome
         scoop install -k keepassxc openark kubectl sslscan sqlitestudio keepass-plugin-keepassrpc
