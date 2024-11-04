@@ -44,10 +44,13 @@ jobs:
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -tzip C:\00PackageManager.zip C:\00PackageManager\*
+        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -mx9 -t7z 'C:\00PackageManager.7z' 'C:\00PackageManager\*'
+        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' l 'C:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
       uses: actions/upload-artifact@v4
       with:
-        name: 00PackageManager
-        path: C:\00PackageManager.zip
+        name: Scoop-00PackageManager
+        path: C:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0
