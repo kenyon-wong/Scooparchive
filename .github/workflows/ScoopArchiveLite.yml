@@ -69,11 +69,22 @@ jobs:
         git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
         & $env:SCOOPpy -m pip freeze
 
-    - name: 'Clone CodeQL Repository'
+    - name: Clone CodeQL Repository
       shell: pwsh
       run: |
-        $env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout --recursive'
-        git clone $env:SCOOPCl https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
+        $cloneOptions = '--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout --recursive'
+        $repoUrl = 'https://github.com/github/vscode-codeql-starter.git'
+        $targetPath = Join-Path $env:GITHUB_WORKSPACE 'vscode-codeql-starter'
+          
+        try {
+          Write-Host "Cloning CodeQL repository to $targetPath"
+          git clone $cloneOptions $repoUrl $targetPath
+          if ($LASTEXITCODE -ne 0) { throw "Git clone failed with exit code $LASTEXITCODE" }
+        }
+        catch {
+          Write-Error "Failed to clone repository: $_"
+          exit 1
+        }
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
