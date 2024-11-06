@@ -75,14 +75,16 @@ jobs:
     - name: 'Clone CodeQL Repository'
       shell: pwsh
       run: |
-        git clone --depth 1 https://github.com/github/codeql.git D:\00PackageManager\CodeqlRules
-        git clone --recursive https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
+        $env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout'
+        git clone $env:SCOOPCl https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
+        git clone $env:SCOOPCl --recursive https://github.com/github/codeql.git D:\00PackageManager\CodeqlRules
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-        & 'D:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
-        & 'D:\00PackageManager\Scoop\apps\7zip\current\7z.exe' l 'D:\00PackageManager.7z'
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
       uses: actions/upload-artifact@v4
