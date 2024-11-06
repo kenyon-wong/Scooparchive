@@ -63,8 +63,8 @@ jobs:
     - name: 'Show scoop config'
       shell: pwsh
       run: |
-      	scoop cache rm *
-      	scoop cleanup -k *
+        scoop cache rm *
+        scoop cleanup -k *
         scoop list
         scoop bucket list
         scoop config list
@@ -84,14 +84,14 @@ jobs:
     - name: 'Clone CodeQL Repository'
       shell: pwsh
       run: |
-      	$env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout'
+        $env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout'
         git clone $env:SCOOPCl https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
         git clone $env:SCOOPCl --recursive https://github.com/github/codeql.git D:\00PackageManager\CodeqlRules
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-      	$env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
         & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
         & $env:SCOOP7z l 'D:\00PackageManager.7z'
 
