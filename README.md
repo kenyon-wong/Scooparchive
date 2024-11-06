@@ -41,6 +41,7 @@ ScoopArchive 是一个使用 GitHub Actions 构建 Scoop 环境离线归档的�
      ```powershell
      Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
      scoop reset *
+     scoop cleanup -k *
      ```
 
 4. 验证安装
