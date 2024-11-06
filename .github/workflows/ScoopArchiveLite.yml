@@ -72,13 +72,20 @@ jobs:
     - name: Clone CodeQL Repository
       shell: pwsh
       run: |
-        $cloneOptions = '--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout --recursive'
         $repoUrl = 'https://github.com/github/vscode-codeql-starter.git'
         $targetPath = Join-Path $env:GITHUB_WORKSPACE 'vscode-codeql-starter'
-          
+    
         try {
           Write-Host "Cloning CodeQL repository to $targetPath"
-          git clone $cloneOptions $repoUrl $targetPath
+          git clone `
+            --single-branch `
+            --branch main `
+            --config core.autocrlf=false `
+            --config core.symlinks=false `
+            --depth 1 `
+            --no-checkout `
+            --recursive `
+            $repoUrl $targetPath
           if ($LASTEXITCODE -ne 0) { throw "Git clone failed with exit code $LASTEXITCODE" }
         }
         catch {
