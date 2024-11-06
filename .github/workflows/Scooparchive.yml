@@ -23,14 +23,25 @@ jobs:
         scoop bucket add ktools https://github.com/kenyon-wong/ktools
         
         echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
-         
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+                 
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
-        scoop install -k aria2 sudo git 7zip biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-light autocorrect fd
+        scoop install -k aria2 sudo git 7zip innounp dark
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-light autocorrect fd
         scoop install -k liberica8-full-jdk liberica11-full-jdk liberica17-full-jdk liberica-full-jdk 
         scoop install -k gradle maven jenv idea-ultimate jadx
-        scoop install -k innounp dark
         scoop install -k python
         scoop install -k codeql osv-scanner
         scoop install -k extras/sublime-text vscode obsidian xmlnotepad sumatrapdf
@@ -39,11 +50,15 @@ jobs:
         scoop install -k keepassxc openark kubectl sslscan sqlitestudio keepass-plugin-keepassrpc colortool
         scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste vncviewer sysinternals
         scoop install -k gogo spray zombie fscan
-        scoop cleanup *
         scoop cache rm *
         scoop cleanup -k *
+        
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
         scoop list
         scoop bucket list
+        scoop config list
 
     - name: 'Downloads Pip Packages'
       shell: pwsh
@@ -54,15 +69,14 @@ jobs:
         & $env:SCOOPpy -m pip -V
         & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
         & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
-        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git d:\00PackageManager\ghauri
+        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
         & $env:SCOOPpy -m pip freeze
 
     - name: 'Clone CodeQL Repository'
       shell: pwsh
       run: |
-        git clone --depth 1 https://github.com/github/codeql.git d:\00PackageManager\CodeqlRules
-        git clone --recursive https://github.com/github/vscode-codeql-starter.git d:\00PackageManager\vscode-codeql-starter
-        tree /f D:\00PackageManager\codeqlRules
+        git clone --depth 1 https://github.com/github/codeql.git D:\00PackageManager\CodeqlRules
+        git clone --recursive https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
