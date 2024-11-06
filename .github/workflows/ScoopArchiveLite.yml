@@ -10,8 +10,8 @@ jobs:
     - name: 'Set up Scoop'
       shell: pwsh
       run: |
-        mkdir "C:\00PackageManager\"
-        $env:SCOOP='C:\00PackageManager\Scoop'
+        mkdir "D:\00PackageManager\"
+        $env:SCOOP='D:\00PackageManager\Scoop'
         [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
         Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
         iwr -useb get.scoop.sh | iex
@@ -20,37 +20,72 @@ jobs:
         scoop bucket add nirsoft
         scoop bucket add java
         scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
         
         echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
 
-    - name: 'Cache Scoop Packages'
-      uses: actions/cache@v4
-      with:
-        path: C:\00PackageManager\Scoop\cache
-        key: ${{ runner.os }}-scoop-cache
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
 
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
-        scoop install git aria2 sudo 7zip biome jq vim curl wget base64 gawk grep sed cwrsync cacert yq
+        scoop install -k sudo git innounp dark
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert autocorrect fd
+        scoop install -k liberica8-full-jdk maven
+        scoop install -k python
+        scoop install -k sublime-text vscode obsidian xmlnotepad sumatrapdf
+        scoop install -k windowsdesktop-runtime-lts windows-terminal
+        scoop install -k firefox googlechrome
+        scoop install -k keepassxc openark keepass-plugin-keepassrpc colortool
+        scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste  
+        scoop install -k gogo spray zombie fscan
         scoop cache rm *
+
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
+        scoop list
+        scoop bucket list
+        scoop config list
+
+    - name: 'Downloads Pip Packages'
+      shell: pwsh
+      run: |
+        echo "D:\00PackageManager\Scoop\apps\python\current\Scripts" >> $GITHUB_PATH
+        $env:SCOOPpy='D:\00PackageManager\Scoop\apps\python\current\python.exe'
+        & $env:SCOOPpy -m pip install --upgrade pip
+        & $env:SCOOPpy -m pip -V
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
+        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
+        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
+        & $env:SCOOPpy -m pip freeze
 
     - name: 'Clone CodeQL Repository'
       shell: pwsh
       run: |
-        git clone --single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout https://github.com/github/codeql.git C:\00PackageManager\codeqlRules
-        cd C:\00PackageManager\codeqlRules
+        $env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout --recursive'
+        git clone $env:SCOOPCl https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' a -mx9 -t7z 'C:\00PackageManager.7z' 'C:\00PackageManager\*'
-        & 'C:\00PackageManager\Scoop\apps\7zip\current\7z.exe' l 'C:\00PackageManager.7z'
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
       uses: actions/upload-artifact@v4
       with:
         name: Scoop-00PackageManager
-        path: C:\00PackageManager.7z
+        path: D:\00PackageManager.7z
         retention-days: 3
         compression-level: 0
