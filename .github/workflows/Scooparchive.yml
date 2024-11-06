@@ -1,4 +1,4 @@
-name: 🔨 Scooparchive
+name: 🔨 Scoop Archive
 on:
   workflow_dispatch:
 
