@@ -69,29 +69,47 @@ jobs:
         git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
         & $env:SCOOPpy -m pip freeze
 
-    - name: Clone CodeQL Repository
+    - name: Clone GitHub Repositories
       shell: pwsh
       run: |
-        $repoUrl = 'https://github.com/github/vscode-codeql-starter.git'
-        $targetPath = Join-Path $env:GITHUB_WORKSPACE 'vscode-codeql-starter'
-    
+        function Clone-Repository {
+        param (
+          [string]$RepoUrl,
+          [string]$FolderName,
+          [string]$Branch = "main"
+        )
+        
+        $env:CodeqlPath="D:\00PackageManager\"
+        $targetPath = Join-Path $env:CodeqlPath $FolderName
+        
         try {
-          Write-Host "Cloning CodeQL repository to $targetPath"
+          Write-Host "Cloning repository from $RepoUrl to $targetPath"
           git clone `
             --single-branch `
-            --branch main `
+            --branch $Branch `
             --config core.autocrlf=false `
             --config core.symlinks=false `
             --depth 1 `
             --no-checkout `
             --recursive `
-            $repoUrl $targetPath
-          if ($LASTEXITCODE -ne 0) { throw "Git clone failed with exit code $LASTEXITCODE" }
+            $RepoUrl $targetPath
+                
+          if ($LASTEXITCODE -ne 0) { 
+            throw "Git clone failed with exit code $LASTEXITCODE" 
+          }
+          
+          Write-Host "Successfully cloned repository to $targetPath" -ForegroundColor Green
         }
         catch {
           Write-Error "Failed to clone repository: $_"
           exit 1
+          }
         }
+
+        # Clone vscode-codeql-starter
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/vscode-codeql-starter.git' `
+          -FolderName 'vscode-codeql-starter'
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
