@@ -119,13 +119,6 @@ jobs:
           -RepoUrl 'https://github.com/github/codeql.git' `
           -FolderName 'CodeqlRules'
 
-    # - name: 'Clone CodeQL Repository'
-    #   shell: pwsh
-    #   run: |
-    #     $env:SCOOPCl='--single-branch --branch main --config core.autocrlf=false --config core.symlinks=false --depth 1 --no-checkout'
-    #     git clone $env:SCOOPCl https://github.com/github/vscode-codeql-starter.git D:\00PackageManager\vscode-codeql-starter
-    #     git clone $env:SCOOPCl --recursive https://github.com/github/codeql.git D:\00PackageManager\CodeqlRules
-
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
