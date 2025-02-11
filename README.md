@@ -36,7 +36,6 @@ ScoopArchive 是一个使用 GitHub Actions 构建 Scoop 环境离线归档的�
 
 3. 还原 Scoop 环境
    - 打开 PowerShell
-   - 进入解压后的目录（如 `D:\00PackageManager\`）
    - 运行以下命令：
      ```powershell
      Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
