@@ -48,7 +48,7 @@ jobs:
       run: |
         scoop list
         scoop bucket list
-        scoop config list
+        scoop config 
 
     - name: 'Downloads Pip Packages'
       shell: pwsh
