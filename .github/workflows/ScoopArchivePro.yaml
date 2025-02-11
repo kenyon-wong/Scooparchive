@@ -58,7 +58,7 @@ jobs:
       run: |
         scoop list
         scoop bucket list
-        scoop config list
+        scoop config 
         scoop download windowsdesktop-runtime-lts windows-terminal firefox googlechrome
 
     - name: 'Compress Scoop Directory'
