@@ -47,10 +47,8 @@ jobs:
         scoop install -k extras/tableplus
         scoop install -k codeql osv-scanner
         scoop install -k extras/sublime-text vscode obsidian xmlnotepad sumatrapdf
-        scoop install -k windowsdesktop-runtime-lts windows-terminal
-        scoop install -k firefox googlechrome
         scoop install -k keepassxc openark kubectl sslscan sqlitestudio keepass-plugin-keepassrpc colortool etcd
-        scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste vncviewer sysinternals
+        scoop install -k dupeGuru dismplusplus renamer everything everything-cli powertoys TrafficMonitor snipaste vncviewer sysinternals
         scoop install -k gogo spray zombie fscan pdtm
         scoop cache rm *
         scoop cleanup -k *
@@ -61,6 +59,7 @@ jobs:
         scoop list
         scoop bucket list
         scoop config list
+        scoop download windowsdesktop-runtime-lts windows-terminal firefox googlechrome
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
