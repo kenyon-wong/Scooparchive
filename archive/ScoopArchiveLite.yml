@@ -1,0 +1,130 @@
+name: 🔨 Scoop Archive Lite
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        mkdir "D:\00PackageManager\"
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+
+    - name: 'Install Required Tools'
+      shell: pwsh 
+      run: |
+        scoop install -k sudo git innounp dark
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert autocorrect fd
+        scoop install -k liberica8-full-jdk maven
+        scoop install -k python
+        scoop install -k sublime-text vscode obsidian xmlnotepad sumatrapdf
+        scoop install -k windowsdesktop-runtime-lts windows-terminal
+        scoop install -k firefox googlechrome
+        scoop install -k keepassxc openark keepass-plugin-keepassrpc colortool
+        scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste  
+        scoop install -k gogo spray zombie fscan
+        scoop cache rm *
+
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
+        scoop list
+        scoop bucket list
+        scoop config list
+
+    - name: 'Downloads Pip Packages'
+      shell: pwsh
+      run: |
+        echo "D:\00PackageManager\Scoop\apps\python\current\Scripts" >> $GITHUB_PATH
+        $env:SCOOPpy='D:\00PackageManager\Scoop\apps\python\current\python.exe'
+        & $env:SCOOPpy -m pip install --upgrade pip
+        & $env:SCOOPpy -m pip -V
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
+        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
+        & $env:SCOOPpy -m pip install subprocess pocsuite qrcode accelerate androguard docx2pdf docx2txt 
+        & $env:SCOOPpy -m pip install dsinternals flask gradio ldapdomaindump simplejson python-magic python-docx
+        & $env:SCOOPpy -m pip install pysocks pycryptodomex pyopenssl pyreadline
+        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
+        & $env:SCOOPpy -m pip freeze
+
+    - name: Clone GitHub Repositories
+      shell: pwsh
+      run: |
+        function Clone-Repository {
+        param (
+          [string]$RepoUrl,
+          [string]$FolderName,
+          [string]$Branch = "main"
+        )
+        
+        $env:CodeqlPath="D:\00PackageManager\"
+        $targetPath = Join-Path $env:CodeqlPath $FolderName
+        
+        try {
+          Write-Host "Cloning repository from $RepoUrl to $targetPath"
+          git clone `
+            --single-branch `
+            --branch $Branch `
+            --config core.autocrlf=false `
+            --config core.symlinks=false `
+            --depth 1 `
+            --no-checkout `
+            --recursive `
+            $RepoUrl $targetPath
+                
+          if ($LASTEXITCODE -ne 0) { 
+            throw "Git clone failed with exit code $LASTEXITCODE" 
+          }
+          
+          Write-Host "Successfully cloned repository to $targetPath" -ForegroundColor Green
+        }
+        catch {
+          Write-Error "Failed to clone repository: $_"
+          exit 1
+          }
+        }
+
+        # Clone vscode-codeql-starter
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/vscode-codeql-starter.git' `
+          -FolderName 'vscode-codeql-starter'
+
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-00PackageManager
+        path: D:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0
