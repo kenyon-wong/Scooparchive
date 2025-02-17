@@ -1,0 +1,113 @@
+name: 🔨 Scoop Archive CodeQL
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        mkdir "D:\00PackageManager\"
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+        scoop bucket add r-bucket https://github.com/cderv/r-bucket.git
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+                 
+    - name: 'Install CodeQL'
+      shell: pwsh 
+      run: |
+        scoop install codeql liberica8-full-jdk liberica11-full-jdk liberica17-full-jdk liberica-full-jdk gradle maven
+        
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
+        scoop cache rm *
+        scoop cleanup -k *
+        scoop list
+        scoop bucket list
+        scoop config list
+
+    - name: Clone GitHub Repositories
+      shell: pwsh
+      run: |
+        function Clone-Repository {
+        param (
+          [string]$RepoUrl,
+          [string]$FolderName,
+          [string]$Branch = "main"
+        )
+        
+        $env:CodeqlPath="D:\00PackageManager\"
+        $targetPath = Join-Path $env:CodeqlPath $FolderName
+        
+        try {
+          Write-Host "Cloning repository from $RepoUrl to $targetPath"
+          git clone `
+            --single-branch `
+            --branch $Branch `
+            --config core.autocrlf=false `
+            --config core.symlinks=false `
+            --depth 1 `
+            --no-checkout `
+            --recursive `
+            $RepoUrl $targetPath
+                
+          if ($LASTEXITCODE -ne 0) { 
+            throw "Git clone failed with exit code $LASTEXITCODE" 
+          }
+          
+          Write-Host "Successfully cloned repository to $targetPath" -ForegroundColor Green
+        }
+        catch {
+          Write-Error "Failed to clone repository: $_"
+          exit 1
+          }
+        }
+
+        # Clone vscode-codeql-starter
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/vscode-codeql-starter.git' `
+          -FolderName 'vscode-codeql-starter'
+
+        # Clone CodeQL rules
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/codeql.git' `
+          -FolderName 'CodeqlRules'
+
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-CodeQL
+        path: D:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0

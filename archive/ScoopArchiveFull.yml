@@ -1,0 +1,274 @@
+name: 🔨 Scoop Archive Full
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: Create Working Directories
+      shell: pwsh
+      run: |
+        mkdir "D:\00PackageManager\"
+        mkdir "D:\00PackageManager\BinarySoft"
+        mkdir "D:\00PackageManager\BurpExtender"
+        mkdir "D:\00PackageManager\chocolatey"
+        mkdir "D:\00PackageManager\Windows_Index"
+        mkdir "D:\00PackageManager\Golang"
+        mkdir "D:\00PackageManager\Golang\go"
+        mkdir "D:\00PackageManager\Golang\go-build"
+        mkdir "D:\01Sync"
+        mkdir "D:\01Sync\Sync\Zotero"
+        mkdir "D:\Workstation"
+        
+    - name: Install Scoop
+      shell: pwsh
+      run: |
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add nerd-fonts
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+        scoop bucket add r-bucket https://github.com/cderv/r-bucket.git
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: Configure Scoop to Use Aria2
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+                 
+    - name: Install Common Scoop Tools
+      shell: pwsh 
+      run: |
+        scoop install -k adb innounp dark anew apktool gcc nuget shellcheck
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-light autocorrect fd
+        scoop install -k liberica8-full-jdk liberica11-full-jdk liberica17-full-jdk liberica-full-jdk gradle maven jenv idea-ultimate jadx
+        scoop install -k python ruby rust go nodejs-lts-np yarn 
+        scoop install -k codeql osv-scanner yara 
+        scoop install -k extras/sublime-text vscode obsidian xmlnotepad sumatrapdf zotero oss-browser sharex
+        scoop install -k firefox googlechrome foxmail
+        scoop install -k keepassxc openark kubectl sslscan sqlitestudio colortool onefetch 
+        scoop install -k dupeGuru dismplusplus renamer everything powertoys TrafficMonitor snipaste vncviewer sysinternals imagemagick
+        scoop install -k clash-verge-rev eclipse-mat exiftool ffmpeg fscapture honeyview masscode nircmd office-tool-plus pandoc picgo pixpin ssh-config
+        scoop install -k gogo spray zombie fscan
+        scoop install -k crawlergo ffuf fofax goby hashcat ksubdomain netspy pdtm 
+        scoop install -k chsrc
+
+    - name: gem Install base64
+      shell: pwsh 
+      run: |
+        gem install base64
+
+    - name: Install LaTeX Environment
+      shell: pwsh 
+      run: |
+        scoop install tinytex
+        $env:SCOOPtlmgr='D:\00PackageManager\Scoop\apps\tinytex\current\bin\windows\tlmgr'
+        & $env:SCOOPtlmgr update --self --all
+        & $env:SCOOPtlmgr install parskip fontawesome5ca ctex
+         
+    - name: Show Scoop Configuration
+      shell: pwsh
+      run: |
+        scoop cache rm *
+        scoop cleanup -k *
+        scoop list
+        scoop bucket list
+        scoop config list
+
+    # - name: 'Install Global Scoop Tools'
+    #   shell: pwsh 
+    #   run: |
+    #     sudo scoop install -k -g windowsdesktop-runtime-lts windows-terminal
+
+    - name: 'Download Global Scoop Tools'
+      shell: pwsh 
+      run: |
+        scoop download windowsdesktop-runtime-lts windows-terminal
+
+    # - name: 'Install Chocolatey Tools'
+    #   shell: pwsh 
+    #   run: |
+    #     sudo choco install --ignore-detected-reboot --ignorechecksum -y DotNet3.5 dotnetfx vcredist140 vcredist2015
+    #     sudo choco install --ignore-detected-reboot --ignorechecksum -y bandizip mysql-cli remove-empty-directories ssh-copy-id veracrypt
+
+    - name: 'Install Python Packages'
+      shell: pwsh
+      run: |
+        echo "D:\00PackageManager\Scoop\apps\python\current\Scripts" >> $GITHUB_PATH
+        $env:SCOOPpy='D:\00PackageManager\Scoop\apps\python\current\python.exe'
+        & $env:SCOOPpy -m pip install --upgrade pip
+        & $env:SCOOPpy -m pip -V
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
+        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
+        & $env:SCOOPpy -m pip install subprocess pocsuite qrcode accelerate androguard docx2pdf docx2txt 
+        & $env:SCOOPpy -m pip install dsinternals flask gradio ldapdomaindump simplejson python-magic python-docx
+        & $env:SCOOPpy -m pip install pysocks pycryptodomex pyopenssl pyreadline
+        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
+        & $env:SCOOPpy -m pip freeze
+
+    - name: 'Clone GitHub Repositories'
+      shell: pwsh
+      run: |
+        function Clone-Repository {
+        param (
+          [string]$RepoUrl,
+          [string]$FolderName,
+          [string]$Branch = "main"
+        )
+        
+        $env:CodeqlPath="D:\00PackageManager\"
+        $targetPath = Join-Path $env:CodeqlPath $FolderName
+        
+        try {
+          Write-Host "Cloning repository from $RepoUrl to $targetPath"
+          git clone `
+            --single-branch `
+            --branch $Branch `
+            --config core.autocrlf=false `
+            --config core.symlinks=false `
+            --depth 1 `
+            --no-checkout `
+            --recursive `
+            $RepoUrl $targetPath
+                
+          if ($LASTEXITCODE -ne 0) { 
+            throw "Git clone failed with exit code $LASTEXITCODE" 
+          }
+          
+          Write-Host "Successfully cloned repository to $targetPath" -ForegroundColor Green
+        }
+        catch {
+          Write-Error "Failed to clone repository: $_"
+          exit 1
+          }
+        }
+
+        # Clone vscode-codeql-starter
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/vscode-codeql-starter.git' `
+          -FolderName 'vscode-codeql-starter'
+
+        # Clone CodeQL rules
+        Clone-Repository `
+          -RepoUrl 'https://github.com/github/codeql.git' `
+          -FolderName 'CodeqlRules'
+
+        # Clone MyTools
+        Clone-Repository `
+          -RepoUrl 'https://github.com/kenyon-wong/MyTools.git' `
+          -FolderName 'MyTools'
+
+    # - name: 'Uninstall Unwanted Appx Packages'
+    #   shell: pwsh
+    #   run: |
+    #     PowerShell "Get-AppxPackage *Clipchamp* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.549981C3F5F10* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.BingNews* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.BingWeather* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.GamingApp* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.GetHelp* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.Getstarted* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.MicrosoftOfficeHub* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.MicrosoftSolitaireCollection* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.MicrosoftStickyNotes* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.MixedReality.Portal* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.Office.OneNote* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.People* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.PowerAutomateDesktop* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.SkypeApp* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.Todos* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.WindowsFeedbackHub* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.WindowsMaps* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.Xbox* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.YourPhone* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *MicrosoftCorporationII.QuickAssist* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *MicrosoftTeams* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.Windows.Ai.Copilot.Provider* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Microsoft.WindowsCamera* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *microsoft.windowscommunicationsapps* -AllUsers | Remove-AppxPackage"
+    #     PowerShell "Get-AppxPackage *Bing* -AllUsers | Remove-AppxPackage"
+
+    # - name: 'Configure Registry Settings'
+    #   shell: pwsh
+    #   run: |
+    #     # 禁用 Edge Bing 侧边栏和搜索建议
+    #     reg add HKEY_CURRENT_USER\Software\Policies\Microsoft\Edge /v HubsSidebarEnabled /t REG_DWORD /d 0x00000000 /f
+    #     reg add HKCU\Software\Policies\Microsoft\Windows\explorer /v DisableSearchBoxSuggestions /t reg_dword /d 1 /f
+    #     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v EnableFeeds /d 0 /t reg_dword /f
+
+    # - name: 'powercfg'
+    #   shell: pwsh
+    #   run: |
+    #     powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+    
+    # - name: 'Add Windows Defender Exclusions'
+    #   shell: pwsh
+    #   run: |
+    #     # 使用 $env:USERNAME 环境变量来获取当前用户的用户名
+    #     $UserName = $env:USERNAME
+    #     $ExclusionPaths = @(
+    #         "C:\Users\$UserName\.pdtm",
+    #         "C:\Users\$UserName\Desktop",
+    #         "C:\Users\$UserName\Downloads",
+    #         "C:\Users\$UserName\nuclei-templates",
+    #         "C:\Users\$UserName\Nutstore",
+    #         "D:\00PackageManager",
+    #         "D:\01Sync",
+    #         "D:\Workstation"
+    #     ) 
+    #     foreach ($Path in $ExclusionPaths) {
+    #         Add-MpPreference -ExclusionPath $Path
+    #     }
+    
+    - name: 'Configure Golang Environment'
+      shell: pwsh
+      run: |
+        # 配置七牛云代理
+        go env -w GO111MODULE=on
+        go env -w GOPROXY="https://goproxy.cn,direct"
+        # 修改默认缓存位置
+        go env -w GOPATH="D:\00PackageManager\Golang\go"
+        go env -w GOMODCACHE="D:\00PackageManager\Golang\go\pkg\mod"
+        go env -w GOCACHE="D:\00PackageManager\Golang\go-build"
+
+    # - name: 'Configure pip Environment'
+    #   shell: pwsh
+    #   run: |
+    #     pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple/
+    #     pip config set install.trusted-host mirrors.cloud.tencent.com
+
+    # - name: 'Install Chocolatey'
+    #   shell: pwsh
+    #   run: |
+    #     pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple/
+    #     pip config set install.trusted-host mirrors.cloud.tencent.com
+        
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*' 'D:\01Sync\' 'D:\Workstation\'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-00PackageManager
+        path: D:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0
