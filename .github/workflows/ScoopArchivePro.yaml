@@ -4,7 +4,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest 
+    runs-on: windows-2025 
     environment: dev
     steps:
     - name: 'Set up Scoop'
