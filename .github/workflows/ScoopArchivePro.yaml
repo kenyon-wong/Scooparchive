@@ -62,6 +62,29 @@ jobs:
         scoop config 
         scoop download windowsdesktop-runtime-lts windows-terminal firefox googlechrome
 
+    - name: Clone GitHub Repositories
+      shell: pwsh
+      run: |
+        git clone --depth 1 'https://github.com/github/vscode-codeql-starter.git' 'D:\00PackageManager\vscode-codeql-starter'
+        git clone --depth 1 'https://github.com/github/codeql.git' 'D:\00PackageManager\CodeqlRules'
+
+    - name: 'Downloads Pip Packages'
+      shell: pwsh
+      run: |
+        echo "D:\00PackageManager\Scoop\apps\python\current\Scripts" >> $GITHUB_PATH
+        $env:SCOOPpy='D:\00PackageManager\Scoop\apps\python\current\python.exe'
+        & $env:SCOOPpy -m pip install --upgrade pip
+        & $env:SCOOPpy -m pip -V
+        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
+        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
+        & $env:SCOOPpy -m pip install subprocess pocsuite qrcode accelerate androguard docx2pdf docx2txt logging colorlog
+        & $env:SCOOPpy -m pip install dsinternals flask gradio ldapdomaindump simplejson python-magic python-docx
+        & $env:SCOOPpy -m pip install pysocks pycryptodomex pyopenssl pyreadline gitpython PyYAML click retry argparse
+        & $env:SCOOPpy -m pip install frida frida-tools
+        git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
+        & $env:SCOOPpy -m pip install -r D:\00PackageManager\ghauri\requirements.txt
+        & $env:SCOOPpy -m pip freeze
+
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
