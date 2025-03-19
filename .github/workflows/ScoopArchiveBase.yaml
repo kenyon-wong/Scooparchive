@@ -40,6 +40,7 @@ jobs:
       run: |
         scoop install -k innounp dark
         scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
+        scoop install -k burp-suite-pro-np
         scoop cache rm *
         scoop cleanup -k *
         
