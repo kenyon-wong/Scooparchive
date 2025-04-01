@@ -53,7 +53,7 @@ jobs:
     - name: Clone GitHub Repositories
       shell: pwsh
       run: |
-        git clone --depth 1 'https://github.com/github/vscode-codeql-starter.git' 'D:\00PackageManager\vscode-codeql-starter'
+        git clone --recursive --depth 1 'https://github.com/github/vscode-codeql-starter.git' 'D:\00PackageManager\vscode-codeql-starter'
         git clone --depth 1 'https://github.com/github/codeql.git' 'D:\00PackageManager\CodeqlRules'
 
     - name: 'Compress Scoop Directory'
