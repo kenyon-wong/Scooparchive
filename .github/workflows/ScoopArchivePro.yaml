@@ -52,6 +52,7 @@ jobs:
         scoop install -k vcredist2010 vcredist2012 vcredist2013 vcredist2022
         scoop install -k gogo spray zombie fscan pdtm
         scoop install -k anew anki another-redis-desktop-manager apktool blueteamtools burp-suite-pro-np chromedriver chsrc cmake crawlergo dos2unix dotnet-sdk-lts dotnet3-sdk exiftool ffmpeg ffuf fofax foxmail fscapture gcc git-cliff git-lfs go googlechrome gpg hadolint hashcat honeyview imagemagick keepass ksubdomain lefthook make masscode netspy nircmd nodejs-lts-np nuget office-tool-plus onefetch oss-browser pandoc pdfpatcher picgo pixpin rad rufus screentogif sharex shellcheck SpaceSniffer ssh-config sublime-text tableplus yara yarn zotero
+        scoop install -k adb firefox goby nodejs openhashtab-np peazip ruby rust rust-msvc rustup-msvc scoop-search UniGetUI wireshark windows-terminal windowsdesktop-runtime-lts
         scoop cache rm *
         scoop cleanup -k *
 
