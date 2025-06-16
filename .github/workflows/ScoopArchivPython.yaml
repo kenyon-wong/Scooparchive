@@ -65,6 +65,7 @@ jobs:
         & $env:SCOOPpy -m pip install frida frida-tools
         git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
         & $env:SCOOPpy -m pip install -r D:\00PackageManager\ghauri\requirements.txt
+        & $env:SCOOPpy -m pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
         & $env:SCOOPpy -m pip freeze
 
     - name: 'Compress Scoop Directory'
