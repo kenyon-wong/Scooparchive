@@ -64,6 +64,7 @@ jobs:
         & $env:SCOOPpy -m pip install dsinternals flask gradio ldapdomaindump simplejson python-magic python-docx
         & $env:SCOOPpy -m pip install pysocks pycryptodomex pyopenssl pyreadline gitpython PyYAML click retry argparse
         & $env:SCOOPpy -m pip install frida frida-tools
+        & $env:SCOOPpy -m pip install certifi cryptography ffmpy gradio-client numpy orjson pip pydantic_core smmap starlette tomlkit typer typing-extensions uvicorn websockets uv
         git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
         & $env:SCOOPpy -m pip install -r D:\00PackageManager\ghauri\requirements.txt
         & $env:SCOOPpy -m pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
