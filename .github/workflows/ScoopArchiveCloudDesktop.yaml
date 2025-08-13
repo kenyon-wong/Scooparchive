@@ -1,0 +1,69 @@
+name: 🔨 Scoop - Archive Apps to Cloud Desktop
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        mkdir "D:\00PackageManager\"
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+ 
+    - name: 'Install Required Tools'
+      shell: pwsh 
+      run: |
+        scoop install -k innounp dark
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
+        scoop install -k burp-suite-pro-np
+        scoop install -k adb anew apktool blueteamtools chromedriver chsrc cmake codeql colortool crawlergo dismplusplus dos2unix dotnet-sdk-lts dotnet3-sdk dupeGuru etcd everything everything-cli exiftool ffmpeg ffuf firefox fofax fscan fscapture gcc git-cliff git-lfs go goby gogo googlechrome gpg gradle gui-for-clash hadolint hashcat honeyview imagemagick jadx jenv keepass keepass-plugin-keepassrpc keepassxc ksubdomain kubectl Ldap-admin lefthook liberica-full-lts-jdk liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk make masscode maven netspy nircmd nodejs-lts nuget obsidian office-tool-plus onefetch openark openhashtab-np oss-browser osv-scanner pandoc pdfpatcher pdtm peazip picgo pixpin powertoys rad renamer ruby rufus rust rust-msvc rustup-msvc s3browser scoop-search screentogif sharex shellcheck snipaste SpaceSniffer spray sqlitestudio ssh-config sslscan sublime-text sumatrapdf sysinternals tableplus TrafficMonitor UniGetUI vcredist2010 vcredist2012 vcredist2013 vcredist2022 vncviewer vscodium xmlnotepad yara yarn zombie zotero
+        scoop cache rm *
+        scoop cleanup -k *
+        
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
+        scoop list
+        scoop bucket list
+        scoop config
+
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z -snh -snl 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-00PackageManager-CloudDesktop
+        path: D:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0
