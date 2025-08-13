@@ -39,7 +39,7 @@ jobs:
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
-        scoop install -k python adb
+        scoop install -k python
         scoop cache rm *
         scoop cleanup -k *
 
@@ -84,3 +84,4 @@ jobs:
         path: D:\00PackageManager.7z
         retention-days: 3
         compression-level: 0
+
