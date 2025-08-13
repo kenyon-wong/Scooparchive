@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest 
+    runs-on: windows-latest
     environment: dev
     steps:
     - name: 'Set up Scoop'
@@ -14,7 +14,7 @@ jobs:
         mkdir "D:\00PackageManager\"
         $env:SCOOP='D:\00PackageManager\Scoop'
         [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
-        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser
         iwr -useb get.scoop.sh | iex
         scoop bucket add extras
         scoop bucket add versions
@@ -26,7 +26,7 @@ jobs:
         echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
 
     - name: 'Setup Scoop aria2'
-      shell: pwsh 
+      shell: pwsh
       run: |
         scoop install -k aria2 sudo git 7zip
         scoop config aria2-warning-enabled false
@@ -37,21 +37,21 @@ jobs:
         scoop config aria2-min-split-size 4M
  
     - name: 'Install Required Tools'
-      shell: pwsh 
+      shell: pwsh
       run: |
         scoop install -k innounp dark
         scoop install -k jq yq vim curl wget gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
         scoop install -k burp-suite-pro-np
-        scoop install -k anew apktool blueteamtools chromedriver chsrc cmake codeql colortool crawlergo 
-        scoop install -k dotnet-sdk-lts dotnet3-sdk dupeGuru etcd everything everything-cli 
-        scoop install -k exiftool ffmpeg ffuf firefox fofax fscan fscapture gcc git-cliff git-lfs go gogo 
-        scoop install -k googlechrome gpg gradle gui-for-clash hadolint hashcat 
-        scoop install -k honeyview imagemagick jadx jenv keepass keepass-plugin-keepassrpc keepassxc ksubdomain kubectl Ldap-admin lefthook 
-        scoop install -k liberica-full-lts-jdk liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk make masscode maven netspy 
-        scoop install -k nircmd nodejs-lts nuget obsidian office-tool-plus onefetch openark openhashtab-np oss-browser osv-scanner pandoc pdfpatcher 
-        scoop install -k pdtm peazip picgo pixpin powertoys rad renamer ruby rufus rust rust-msvc rustup-msvc s3browser scoop-search 
-        scoop install -k screentogif sharex shellcheck snipaste SpaceSniffer spray sqlitestudio ssh-config sslscan sublime-text 
-        scoop install -k sumatrapdf sysinternals tableplus TrafficMonitor UniGetUI 
+        scoop install -k anew apktool blueteamtools chromedriver chsrc cmake codeql colortool crawlergo
+        scoop install -k dotnet-sdk-lts dotnet3-sdk dupeGuru etcd everything everything-cli
+        scoop install -k exiftool ffmpeg ffuf firefox fofax fscan fscapture gcc git-cliff git-lfs go gogo
+        scoop install -k googlechrome gpg gradle gui-for-clash hadolint hashcat
+        scoop install -k honeyview imagemagick jadx jenv keepassxc ksubdomain kubectl Ldap-admin lefthook
+        scoop install -k liberica-full-lts-jdk liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk make masscode maven netspy
+        scoop install -k nircmd nodejs-lts nuget obsidian office-tool-plus onefetch openark oss-browser osv-scanner pandoc
+        scoop install -k pdtm peazip picgo pixpin powertoys rad renamer ruby rufus rust rust-msvc rustup-msvc s3browser scoop-search
+        scoop install -k screentogif sharex shellcheck snipaste SpaceSniffer spray sqlitestudio ssh-config sslscan sublime-text
+        scoop install -k sumatrapdf sysinternals TrafficMonitor UniGetUI
         scoop install -k vcredist2010 vcredist2012 vcredist2013 vcredist2022 vncviewer vscodium xmlnotepad yara yarn zombie zotero
         scoop cache rm *
         scoop cleanup -k *
