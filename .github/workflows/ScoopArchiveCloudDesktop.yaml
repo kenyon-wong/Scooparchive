@@ -40,7 +40,7 @@ jobs:
       shell: pwsh
       run: |
         scoop install -k innounp dark
-        scoop install -k jq yq vim curl wget gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
+        scoop install -k jq yq vim curl wget gawk grep sed less touch which cwrsync cacert autocorrect fd sourcegit
         scoop install -k burp-suite-pro-np
         scoop install -k anew apktool blueteamtools chromedriver chsrc cmake codeql colortool crawlergo
         scoop install -k dotnet-sdk-lts dotnet3-sdk dupeGuru etcd
@@ -52,7 +52,7 @@ jobs:
         scoop install -k pdtm peazip picgo pixpin rad renamer ruby rufus rust rust-msvc rustup-msvc s3browser scoop-search
         scoop install -k screentogif sharex shellcheck SpaceSniffer spray sqlitestudio ssh-config sslscan
         scoop install -k sumatrapdf sysinternals TrafficMonitor UniGetUI
-        scoop install -k vcredist2010 vcredist2012 vcredist2013 vcredist2022 vncviewer vscodium xmlnotepad yara yarn zombie zotero
+        scoop install -k vcredist2010 vcredist2012 vcredist2013 vncviewer vscodium xmlnotepad yara yarn zombie zotero
         scoop cache rm *
         scoop cleanup -k *
         
