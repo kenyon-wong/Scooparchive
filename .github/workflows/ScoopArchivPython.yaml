@@ -1,20 +1,26 @@
 name: 🔨 Scoop Archive Python
+
 on:
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest 
+    runs-on: windows-latest
     environment: dev
+
     steps:
     - name: 'Set up Scoop'
       shell: pwsh
       run: |
-        mkdir "D:\00PackageManager\"
-        $env:SCOOP='D:\00PackageManager\Scoop'
-        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
-        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        $root="D:\00PackageManager"
+        $scoop="$root\Scoop"
+        mkdir $root
+        echo "SCOOP=$scoop" >> $env:GITHUB_ENV
+        echo "$scoop\shims" >> $env:GITHUB_PATH
+
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         iwr -useb get.scoop.sh | iex
+
         scoop bucket add extras
         scoop bucket add versions
         scoop bucket add nirsoft
@@ -22,66 +28,111 @@ jobs:
         scoop bucket add nonportable
         scoop bucket add ktools https://github.com/kenyon-wong/ktools
         scoop bucket add r-bucket https://github.com/cderv/r-bucket.git
-        
-        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
 
     - name: 'Setup Scoop aria2'
-      shell: pwsh 
+      shell: pwsh
       run: |
         scoop install -k aria2 sudo git 7zip
-        scoop config aria2-warning-enabled false
         scoop config aria2-enabled true
+        scoop config aria2-warning-enabled false
         scoop config aria2-retry-wait 4
         scoop config aria2-split 16
         scoop config aria2-max-connection-per-server 16
         scoop config aria2-min-split-size 4M
-                 
-    - name: 'Install Required Tools'
-      shell: pwsh 
+
+    - name: 'Install Python'
+      shell: pwsh
       run: |
         scoop install -k python
-        scoop cache rm *
-        scoop cleanup -k *
+        echo "SCOOP_PY=$env:SCOOP\apps\python\current\python.exe" >> $env:GITHUB_ENV
+        echo "$env:SCOOP\apps\python\current\Scripts" >> $env:GITHUB_PATH
 
-    - name: 'Show scoop config'
+    - name: 'Install Pip Packages'
       shell: pwsh
       run: |
-        scoop list
-        scoop bucket list
-        scoop config 
+        & $env:SCOOP_PY -m pip install --upgrade pip
+        & $env:SCOOP_PY -m pip -V
+        # 通过 requirements.txt 管理依赖
+        @"
+        sqlmap
+        bs4
+        XlsxWriter
+        tqdm
+        python-libnmap
+        pyDes
+        pipx
+        openpyxl
+        tldextract
+        colorama
+        rncryptor
+        pandas
+        requests
+        pycryptodome
+        beautifulsoup4
+        chardet
+        pocsuite
+        qrcode
+        accelerate
+        androguard
+        docx2pdf
+        docx2txt
+        colorlog
+        dsinternals
+        flask
+        gradio
+        ldapdomaindump
+        simplejson
+        python-magic
+        python-docx
+        pysocks
+        pycryptodomex
+        pyopenssl
+        pyreadline
+        gitpython
+        PyYAML
+        click
+        retry
+        argparse
+        frida
+        frida-tools
+        certifi
+        cryptography
+        ffmpy
+        gradio-client
+        numpy
+        orjson
+        pydantic_core
+        smmap
+        starlette
+        tomlkit
+        typer
+        typing-extensions
+        uvicorn
+        websockets
+        uv
+        "@ | Out-File requirements.txt -Encoding utf8
 
-    - name: 'Downloads Pip Packages'
-      shell: pwsh
-      run: |
-        echo "D:\00PackageManager\Scoop\apps\python\current\Scripts" >> $GITHUB_PATH
-        $env:SCOOPpy='D:\00PackageManager\Scoop\apps\python\current\python.exe'
-        set "PATH=%PATH%;D:\00PackageManager\Scoop\apps\python\current\Scripts"
-        & $env:SCOOPpy -m pip install --upgrade pip
-        & $env:SCOOPpy -m pip -V
-        & $env:SCOOPpy -m pip install sqlmap bs4 XlsxWriter tqdm python-libnmap pyDes pipx openpyxl tldextract
-        & $env:SCOOPpy -m pip install colorama rncryptor pandas requests pycryptodome beautifulsoup4 chardet
-        & $env:SCOOPpy -m pip install subprocess pocsuite qrcode accelerate androguard docx2pdf docx2txt logging colorlog
-        & $env:SCOOPpy -m pip install dsinternals flask gradio ldapdomaindump simplejson python-magic python-docx
-        & $env:SCOOPpy -m pip install pysocks pycryptodomex pyopenssl pyreadline gitpython PyYAML click retry argparse
-        & $env:SCOOPpy -m pip install frida frida-tools
-        & $env:SCOOPpy -m pip install certifi cryptography ffmpy gradio-client numpy orjson pip pydantic_core smmap starlette tomlkit typer typing-extensions uvicorn websockets uv
+        & $env:SCOOP_PY -m pip install -r requirements.txt
+
+        # ghouri 特殊依赖
         git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
-        & $env:SCOOPpy -m pip install -r D:\00PackageManager\ghauri\requirements.txt
-        & $env:SCOOPpy -m pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
-        & $env:SCOOPpy -m pip freeze
+        & $env:SCOOP_PY -m pip install -r D:\00PackageManager\ghauri\requirements.txt
+
+        & $env:SCOOP_PY -m pip freeze
 
     - name: 'Compress Scoop Directory'
       shell: pwsh
       run: |
-        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
-        & $env:SCOOP7z a -mx9 -t7z -snh -snl 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
-        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+        $zip="D:\00PackageManager.7z"
+        $scoop7z="$env:SCOOP\apps\7zip\current\7z.exe"
+        & $scoop7z a -mx9 -t7z -snh -snl $zip "$env:SCOOP\*"
+        & $scoop7z l $zip
+        echo "SCOOP_ARCHIVE=$zip" >> $env:GITHUB_ENV
 
-    - name: 'Upload Compressed Scoop Directory'
+    - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
         name: Scoop-00PackageManager-Python
-        path: D:\00PackageManager.7z
-        retention-days: 3
+        path: ${{ env.SCOOP_ARCHIVE }}
+        retention-days: 7
         compression-level: 0
-
