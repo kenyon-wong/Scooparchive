@@ -7,6 +7,9 @@ jobs:
     runs-on: windows-latest 
     environment: dev
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: 'Set up Scoop'
       shell: pwsh
       run: |
@@ -27,7 +30,7 @@ jobs:
     - name: 'Setup Scoop aria2'
       shell: pwsh 
       run: |
-        scoop install -k aria2 sudo git 7zip
+        scoop install aria2 sudo git 7zip
         scoop config aria2-warning-enabled false
         scoop config aria2-enabled true
         scoop config aria2-retry-wait 4
@@ -38,11 +41,9 @@ jobs:
     - name: 'Install Required Tools'
       shell: pwsh 
       run: |
-        scoop install -k innounp dark
-        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
-        scoop install -k burp-suite-pro-np
-        scoop cache rm *
-        scoop cleanup -k *
+        scoop install innounp dark
+        scoop install biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
+        scoop install burp-suite-pro-np
 
     - name: '📦 Pre-download Scoop Apps (from scoopfile.json)'
       shell: pwsh
