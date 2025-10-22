@@ -1,0 +1,1062 @@
+{
+    "buckets": [
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main.git",
+            "Updated": {
+                "value": "\/Date(1761107385000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月22日 12:29:45"
+            },
+            "Manifests": 1406
+        },
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras",
+            "Updated": {
+                "value": "\/Date(1761107347000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月22日 12:29:07"
+            },
+            "Manifests": 2204
+        },
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions",
+            "Updated": {
+                "value": "\/Date(1761108060000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月22日 12:41:00"
+            },
+            "Manifests": 528
+        },
+        {
+            "Name": "nirsoft",
+            "Source": "https://github.com/ScoopInstaller/Nirsoft",
+            "Updated": {
+                "value": "\/Date(1761108884000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月22日 12:54:44"
+            },
+            "Manifests": 332
+        },
+        {
+            "Name": "nerd-fonts",
+            "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
+            "Updated": {
+                "value": "\/Date(1760764922000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月18日 13:22:02"
+            },
+            "Manifests": 367
+        },
+        {
+            "Name": "nonportable",
+            "Source": "https://github.com/ScoopInstaller/Nonportable",
+            "Updated": {
+                "value": "\/Date(1753967311000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年7月31日 21:08:31"
+            },
+            "Manifests": 128
+        },
+        {
+            "Name": "java",
+            "Source": "https://github.com/ScoopInstaller/Java",
+            "Updated": {
+                "value": "\/Date(1753764566000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年7月29日 12:49:26"
+            },
+            "Manifests": 299
+        },
+        {
+            "Name": "ktools",
+            "Source": "https://github.com/kenyon-wong/ktools",
+            "Updated": {
+                "value": "\/Date(1753448668000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年7月25日 21:04:28"
+            },
+            "Manifests": 38
+        },
+        {
+            "Name": "r-bucket",
+            "Source": "https://github.com/cderv/r-bucket.git",
+            "Updated": {
+                "value": "\/Date(1761106181000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2025年10月22日 12:09:41"
+            },
+            "Manifests": 44
+        }
+    ],
+    "apps": [
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "adb",
+            "Version": "36.0.0",
+            "Updated": "\/Date(1749801995993)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "anew",
+            "Version": "0.1.1",
+            "Updated": "\/Date(1747971578816)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "apktool",
+            "Version": "2.12.0",
+            "Updated": "\/Date(1751936438814)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "aria2",
+            "Version": "1.37.0-1",
+            "Updated": "\/Date(1754010527424)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "AutoCorrect",
+            "Version": "2.14.2",
+            "Updated": "\/Date(1753930663252)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "base64",
+            "Version": "1.3.0",
+            "Updated": "\/Date(1753930668338)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "biome",
+            "Version": "2.1.3",
+            "Updated": "\/Date(1753930736508)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "blueteamtools",
+            "Version": "0.92",
+            "Updated": "\/Date(1747971590303)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "cacert",
+            "Version": "2025-07-15",
+            "Updated": "\/Date(1753930742368)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "chromedriver",
+            "Version": "138.0.7204.183",
+            "Updated": "\/Date(1753931025531)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "chsrc",
+            "Version": "0.2.2",
+            "Updated": "\/Date(1753931041473)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "cmake",
+            "Version": "4.0.3",
+            "Updated": "\/Date(1750035049955)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "codeql",
+            "Version": "2.22.2",
+            "Updated": "\/Date(1753931255206)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "colortool",
+            "Version": "1904.29002",
+            "Updated": "\/Date(1747971513118)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "crawlergo",
+            "Version": "0.4.4",
+            "Updated": "\/Date(1747971603081)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "curl",
+            "Version": "8.15.0_4",
+            "Updated": "\/Date(1753931371724)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "cwrsync",
+            "Version": "6.4.4",
+            "Updated": "\/Date(1753931377961)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "dark",
+            "Version": "3.14.1",
+            "Updated": "\/Date(1747971225690)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "dismplusplus",
+            "Version": "10.1.1002.1B",
+            "Updated": "\/Date(1747971516632)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "dos2unix",
+            "Version": "7.5.2",
+            "Updated": "\/Date(1747971604629)\/"
+        },
+        {
+            "Info": "",
+            "Source": "versions",
+            "Name": "dotnet-sdk-lts",
+            "Version": "8.0.412",
+            "Updated": "\/Date(1753931529946)\/"
+        },
+        {
+            "Info": "",
+            "Source": "versions",
+            "Name": "dotnet3-sdk",
+            "Version": "3.1.426",
+            "Updated": "\/Date(1747971619564)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "dupeGuru",
+            "Version": "4.3.1",
+            "Updated": "\/Date(1747971516248)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "erdtree",
+            "Version": "3.1.2",
+            "Updated": "\/Date(1750142862080)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "etcd",
+            "Version": "3.6.4",
+            "Updated": "\/Date(1753952684826)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "everything",
+            "Version": "1.4.1.1028",
+            "Updated": "\/Date(1751936668652)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "everything-cli",
+            "Version": "1.1.0.30",
+            "Updated": "\/Date(1749017905092)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "exiftool",
+            "Version": "13.33",
+            "Updated": "\/Date(1754009383811)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "fd",
+            "Version": "10.2.0",
+            "Updated": "\/Date(1747971287748)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "ffmpeg",
+            "Version": "7.1.1",
+            "Updated": "\/Date(1747971630870)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "ffuf",
+            "Version": "2.1.0",
+            "Updated": "\/Date(1747971631388)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "firefox",
+            "Version": "141.0",
+            "Updated": "\/Date(1754009521727)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "fofax",
+            "Version": "v0.1.47",
+            "Updated": "\/Date(1747971631782)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "foxmail",
+            "Version": "7.2.25.432",
+            "Updated": "\/Date(1754009572100)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "fscan",
+            "Version": "1.8.4",
+            "Updated": "\/Date(1747971577299)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "fscapture",
+            "Version": "11.0",
+            "Updated": "\/Date(1747971644467)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "gawk",
+            "Version": "5.3.2",
+            "Updated": "\/Date(1747971280407)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "gcc",
+            "Version": "13.2.0",
+            "Updated": "\/Date(1747971651389)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "git",
+            "Version": "2.50.1",
+            "Updated": "\/Date(1754009747498)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "git-cliff",
+            "Version": "2.10.0",
+            "Updated": "\/Date(1754009812823)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "git-lfs",
+            "Version": "3.7.0",
+            "Updated": "\/Date(1751936300660)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "go",
+            "Version": "1.24.4",
+            "Updated": "\/Date(1749809434535)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "gogo",
+            "Version": "2.14.0",
+            "Updated": "\/Date(1751936306405)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "googlechrome",
+            "Version": "138.0.7204.97",
+            "Updated": "\/Date(1751936874003)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "gpg",
+            "Version": "2.4.8",
+            "Updated": "\/Date(1747971681568)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "gradle",
+            "Version": "8.14.3",
+            "Updated": "\/Date(1751937200747)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "grep",
+            "Version": "3.11",
+            "Updated": "\/Date(1747971280664)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "gui-for-clash",
+            "Version": "1.9.7",
+            "Updated": "\/Date(1747971506335)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "hadolint",
+            "Version": "2.12.0",
+            "Updated": "\/Date(1747971681888)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "hashcat",
+            "Version": "6.2.6",
+            "Updated": "\/Date(1747971688240)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "honeyview",
+            "Version": "5.53",
+            "Updated": "\/Date(1719802562508)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "idea-ultimate",
+            "Version": "2025.1.3-251.26927.53",
+            "Updated": "\/Date(1751938301354)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "imagemagick",
+            "Version": "7.1.1-47",
+            "Updated": "\/Date(1747638704103)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "innounp",
+            "Version": "2.64.5",
+            "Updated": "\/Date(1750640253548)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "jadx",
+            "Version": "1.5.2",
+            "Updated": "\/Date(1750036003516)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "jenv",
+            "Version": "2.2.1",
+            "Updated": "\/Date(1747971355745)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "jq",
+            "Version": "1.8.1",
+            "Updated": "\/Date(1751936311335)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "keepass",
+            "Version": "2.58",
+            "Updated": "\/Date(1747971512633)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "keepass-plugin-keepassrpc",
+            "Version": "2.0.2",
+            "Updated": "\/Date(1747971512859)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "keepassxc",
+            "Version": "2.7.10",
+            "Updated": "\/Date(1747971507834)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "ksubdomain",
+            "Version": "1.9.9",
+            "Updated": "\/Date(1740036226463)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "kubectl",
+            "Version": "1.33.2",
+            "Updated": "\/Date(1750640738597)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "lefthook",
+            "Version": "1.11.16",
+            "Updated": "\/Date(1751938309630)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "less",
+            "Version": "679",
+            "Updated": "\/Date(1750640259140)\/"
+        },
+        {
+            "Info": "",
+            "Source": "java",
+            "Name": "liberica-full-lts-jdk",
+            "Version": "21.0.7-9",
+            "Updated": "\/Date(1747971311878)\/"
+        },
+        {
+            "Info": "",
+            "Source": "java",
+            "Name": "liberica11-full-jdk",
+            "Version": "11.0.27-9",
+            "Updated": "\/Date(1747971298592)\/"
+        },
+        {
+            "Info": "",
+            "Source": "java",
+            "Name": "liberica17-full-jdk",
+            "Version": "17.0.15-10",
+            "Updated": "\/Date(1747971304765)\/"
+        },
+        {
+            "Info": "",
+            "Source": "java",
+            "Name": "liberica8-full-jdk",
+            "Version": "8u452-11",
+            "Updated": "\/Date(1747971292210)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "make",
+            "Version": "4.4.1",
+            "Updated": "\/Date(1712559291677)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "masscode",
+            "Version": "3.12.1",
+            "Updated": "\/Date(1750036036068)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "maven",
+            "Version": "3.9.10",
+            "Updated": "\/Date(1749811600844)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "netspy",
+            "Version": "0.0.5",
+            "Updated": "\/Date(1740036270672)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "nircmd",
+            "Version": "2.87",
+            "Updated": "\/Date(1713941465897)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "nodejs-lts",
+            "Version": "22.17.1",
+            "Updated": "\/Date(1753952053887)\/"
+        },
+        {
+            "Info": "",
+            "Source": "nonportable",
+            "Name": "nodejs-lts-np",
+            "Version": "22.17.1",
+            "Updated": "\/Date(1753952015378)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "nuget",
+            "Version": "6.14.0",
+            "Updated": "\/Date(1747639471298)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "obsidian",
+            "Version": "1.8.10",
+            "Updated": "\/Date(1747971503224)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "office-tool-plus",
+            "Version": "10.23.6.0",
+            "Updated": "\/Date(1749808098517)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "onefetch",
+            "Version": "2.25.0",
+            "Updated": "\/Date(1751938400229)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "openark",
+            "Version": "1.5.0",
+            "Updated": "\/Date(1750640274804)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "openssl-lts-light",
+            "Version": "3.0.17",
+            "Updated": "\/Date(1751938410884)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "oss-browser",
+            "Version": "1.19.0",
+            "Updated": "\/Date(1725935175863)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "osv-scanner",
+            "Version": "2.0.3",
+            "Updated": "\/Date(1750129778164)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "pandoc",
+            "Version": "3.7.0.2",
+            "Updated": "\/Date(1749526262957)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "pdfpatcher",
+            "Version": "1.0.4",
+            "Updated": "\/Date(1731662877141)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "pdtm",
+            "Version": "0.1.3",
+            "Updated": "\/Date(1749526246462)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "picgo",
+            "Version": "2.3.1",
+            "Updated": "\/Date(1712559608318)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "pixpin",
+            "Version": "1.9.5.0",
+            "Updated": "\/Date(1731663745420)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "powertoys",
+            "Version": "0.92.1",
+            "Updated": "\/Date(1751945141133)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "python",
+            "Version": "3.13.5",
+            "Updated": "\/Date(1749808086010)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "rad",
+            "Version": "1.0",
+            "Updated": "\/Date(1715396058973)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "renamer",
+            "Version": "7.8",
+            "Updated": "\/Date(1751938418758)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "ruby",
+            "Version": "3.4.4-2",
+            "Updated": "\/Date(1747639701679)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "rufus",
+            "Version": "4.9",
+            "Updated": "\/Date(1750036042754)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "rust",
+            "Version": "1.88.0",
+            "Updated": "\/Date(1751939376679)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "rustup",
+            "Version": "1.28.2",
+            "Updated": "\/Date(1750135897020)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "rustup-gnu",
+            "Version": "1.28.2",
+            "Updated": "\/Date(1750135997365)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "rustup-msvc",
+            "Version": "1.28.2",
+            "Updated": "\/Date(1750135810004)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "scoop-search",
+            "Version": "2.1.0",
+            "Updated": "\/Date(1749801625270)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "screentogif",
+            "Version": "2.41.3",
+            "Updated": "\/Date(1749526489223)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sed",
+            "Version": "4.9",
+            "Updated": "\/Date(1747971280921)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sharex",
+            "Version": "17.1.0",
+            "Updated": "\/Date(1749526237625)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "shellcheck",
+            "Version": "0.10.0",
+            "Updated": "\/Date(1712559783569)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "snipaste",
+            "Version": "2.10.8",
+            "Updated": "\/Date(1750042895427)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sourcegit",
+            "Version": "2025.25",
+            "Updated": "\/Date(1751944621761)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "SpaceSniffer",
+            "Version": "2.0.2.5",
+            "Updated": "\/Date(1747969369368)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "spray",
+            "Version": "1.2.2",
+            "Updated": "\/Date(1749526211237)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sqlitestudio",
+            "Version": "3.4.17",
+            "Updated": "\/Date(1747971511359)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "ssh-config",
+            "Version": "1.1.1",
+            "Updated": "\/Date(1740031347132)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sslscan",
+            "Version": "2.2.0",
+            "Updated": "\/Date(1750036051127)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sublime-text",
+            "Version": "4-4200",
+            "Updated": "\/Date(1747971493248)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sudo",
+            "Version": "0.2020.01.26",
+            "Updated": "\/Date(1747971213297)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sumatrapdf",
+            "Version": "3.5.2",
+            "Updated": "\/Date(1747971504959)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "sysinternals",
+            "Version": "20250505",
+            "Updated": "\/Date(1747971546284)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "tableplus",
+            "Version": "6.6.2.322",
+            "Updated": "\/Date(1751939489386)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "touch",
+            "Version": "0.2018.07.25",
+            "Updated": "\/Date(1747971281385)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "TrafficMonitor",
+            "Version": "1.85.1",
+            "Updated": "\/Date(1747971539977)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "unigetui",
+            "Version": "3.2.0",
+            "Updated": "\/Date(1749801549927)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vcredist2010",
+            "Version": "10.0.40219.325",
+            "Updated": "\/Date(1747971557793)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vcredist2012",
+            "Version": "11.0.61030.0",
+            "Updated": "\/Date(1747971562475)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vcredist2013",
+            "Version": "12.0.40664.0",
+            "Updated": "\/Date(1747971574194)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vcredist2022",
+            "Version": "14.44.35211.0",
+            "Updated": "\/Date(1753953146929)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "vim",
+            "Version": "9.1.0",
+            "Updated": "\/Date(1747971232156)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vncviewer",
+            "Version": "7.13.1",
+            "Updated": "\/Date(1747971541911)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vscode",
+            "Version": "1.102.3",
+            "Updated": "\/Date(1753948969919)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "wget",
+            "Version": "1.21.4",
+            "Updated": "\/Date(1747971235870)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "which",
+            "Version": "2.20",
+            "Updated": "\/Date(1747971282312)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "windsurf",
+            "Version": "1.11.2",
+            "Updated": "\/Date(1753948880293)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "xmlnotepad",
+            "Version": "2.9.0.16",
+            "Updated": "\/Date(1747971503694)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "yara",
+            "Version": "4.5.4",
+            "Updated": "\/Date(1753948747427)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "yarn",
+            "Version": "1.22.22",
+            "Updated": "\/Date(1717748118726)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "yq",
+            "Version": "4.47.1",
+            "Updated": "\/Date(1753953070506)\/"
+        },
+        {
+            "Info": "",
+            "Source": "ktools",
+            "Name": "zombie",
+            "Version": "1.2.2",
+            "Updated": "\/Date(1747971576966)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "zotero",
+            "Version": "7.0.22",
+            "Updated": "\/Date(1753948634383)\/"
+        },
+        {
+            "Info": "Global install",
+            "Source": "extras",
+            "Name": "firefox",
+            "Version": "140.0.2",
+            "Updated": "\/Date(1751945642826)\/"
+        },
+        {
+            "Info": "Global install",
+            "Source": "main",
+            "Name": "ruby",
+            "Version": "3.4.4-2",
+            "Updated": "\/Date(1750043145307)\/"
+        },
+        {
+            "Info": "Global install",
+            "Source": "extras",
+            "Name": "windows-terminal",
+            "Version": "1.22.11751.0",
+            "Updated": "\/Date(1751945651859)\/"
+        },
+        {
+            "Info": "Global install",
+            "Source": "extras",
+            "Name": "windowsdesktop-runtime-lts",
+            "Version": "8.0.17",
+            "Updated": "\/Date(1750043223536)\/"
+        }
+    ]
+}
