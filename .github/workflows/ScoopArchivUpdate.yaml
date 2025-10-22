@@ -43,7 +43,6 @@ jobs:
       run: |
         scoop install innounp dark
         scoop install biome jq yq vim curl wget base64 gawk grep sed less touch which cwrsync cacert openssl-lts-light autocorrect fd sourcegit
-        scoop install burp-suite-pro-np
 
     - name: '📦 Pre-download Scoop Apps (from scoopfile.json)'
       shell: pwsh
@@ -63,7 +62,7 @@ jobs:
         $apps = Get-Content .\list.txt | Where-Object { $_ -ne "" }
         foreach ($app in $apps) {
           Write-Host "⬇️ 正在下载 Scoop 包: $app"
-          scoop download $app -k
+          scoop download $app
         }
 
     - name: 'Show scoop config'
