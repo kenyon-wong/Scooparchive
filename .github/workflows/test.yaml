@@ -1,0 +1,74 @@
+name: 🔨 Scoop Archive Base
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        mkdir "D:\00PackageManager\"
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser 
+        iwr -useb get.scoop.sh | iex
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+        
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+ 
+    - name: 'Install Required Tools'
+      shell: pwsh 
+      run: |
+        scoop install -k innounp dark
+        scoop install -k ant@1.10.14 ant@1.9.16 go@1.18.10 go@1.19.13 go@1.20.14 go@1.21.7 gradle@7.6.2 gradle@8.5 liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk maven@3.6.3 maven@3.8.8 maven@3.9.6 nodejs@14.21.3 nodejs@16.20.2 nodejs@18.19.0 nodejs@20.11.0 pnpm@7.33.5 pnpm@8.15.1 python27 python@3.11.0 python@3.6.8 python@3.9.0 yarn@1.22.19 yarn@3.6.4
+        scoop cache rm *
+        scoop cleanup -k *
+        
+    - name: 'Show scoop config'
+      shell: pwsh
+      run: |
+        scoop reset ant@1.10.14
+        scoop reset go@1.21.7
+        scoop reset gradle@8.5
+        scoop reset liberica17-full-jdk
+        scoop reset maven@3.9.6
+        scoop reset nodejs@20.11.0
+        scoop reset pnpm@8.15.1
+        scoop reset python@3.11.0
+        scoop reset yarn@3.6.4
+        scoop list
+        scoop bucket list
+        scoop config
+
+    - name: 'Compress Scoop Directory'
+      shell: pwsh
+      run: |
+        $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
+        & $env:SCOOP7z a -mx9 -t7z -snh -snl 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z l 'D:\00PackageManager.7z'
+
+    - name: 'Upload Compressed Scoop Directory'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-00PackageManager-Base
+        path: D:\00PackageManager.7z
+        retention-days: 3
+        compression-level: 0
