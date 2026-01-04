@@ -42,39 +42,29 @@ jobs:
         scoop install liberica8-full-jdk
         scoop install innounp dark
         scoop install python27
-        scoop install python@3.9.0
+        scoop install python@3.9.7
         scoop install python@3.11.0
-        scoop install nodejs@14.21.3
-        scoop install nodejs@16.20.2
-        scoop install nodejs@18.19.0
-        scoop install nodejs@20.11.0
-        scoop install go@1.18.10
-        scoop install go@1.19.13
-        scoop install go@1.20.14
-        scoop install go@1.21.7
+        scoop install nodejs@14.14.0
+        scoop install nodejs@16.10.0
+        scoop install nodejs@18.11.0
+        scoop install nodejs@20.7.0
+        scoop install nodejs@22.5.1
+        scoop install go@1.18.5
+        scoop install go@1.19.5
+        scoop install go@1.20.7
+        scoop install go@1.21.1
+        scoop install go@1.25.5
         scoop install maven
-        scoop install gradle@7.6.2
+        scoop install gradle@7.6
         scoop install gradle@8.5
-        scoop install ant@1.9.16
-        scoop install ant@1.10.14
-        scoop install yarn@1.22.19
-        scoop install yarn@3.6.4
-        scoop install pnpm@7.33.5
-        scoop install pnpm@8.15.1
-        scoop cache rm *
-        scoop cleanup -k *
+        scoop install ant@1.10.15
+        scoop install yarn@1.22.22
+        scoop install pnpm@7.27.1
+        scoop install pnpm@8.7.5
         
     - name: 'Show scoop config'
       shell: pwsh
       run: |
-        scoop reset ant@1.10.14
-        scoop reset go@1.21.7
-        scoop reset gradle@8.5
-        scoop reset liberica17-full-jdk
-        scoop reset nodejs@20.11.0
-        scoop reset pnpm@8.15.1
-        scoop reset python@3.11.0
-        scoop reset yarn@3.6.4
         scoop list
         scoop bucket list
         scoop config
