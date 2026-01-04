@@ -42,7 +42,6 @@ jobs:
         scoop install liberica8-full-jdk
         scoop install innounp dark
         scoop install python27
-        scoop install python@3.6.8
         scoop install python@3.9.0
         scoop install python@3.11.0
         scoop install nodejs@14.21.3
