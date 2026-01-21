@@ -39,8 +39,8 @@ jobs:
     - name: 'Install CodeQL'
       shell: pwsh 
       run: |
-        scoop install liberica-full-lts-jdk liberica11-full-jdk liberica16-full-jdk liberica17-full-jdk liberica8-full-jdk
-        scoop install maven gradle ant
+        scoop install liberica21-full-jdk liberica25-full-jdk liberica11-full-jdk liberica16-full-jdk liberica17-full-jdk liberica8-full-jdk
+        scoop install maven gradle
         scoop install codeql 
         scoop cache rm *
         scoop cleanup -k *
@@ -72,3 +72,4 @@ jobs:
         path: D:\00PackageManager.7z
         retention-days: 3
         compression-level: 0
+
