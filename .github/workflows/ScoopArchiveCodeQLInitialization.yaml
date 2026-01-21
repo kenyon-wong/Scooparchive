@@ -35,11 +35,12 @@ jobs:
     - name: 'Install CodeQL'
       shell: pwsh 
       run: |
-        scoop install -k liberica21-full-jdk liberica25-full-jdk liberica11-full-jdk liberica16-full-jdk liberica17-full-jdk liberica8-full-jdk
-        scoop install -k maven gradle
-        scoop install -k codeql 
-        scoop cache rm *
-        scoop cleanup -k *
+        scoop download liberica21-full-jdk liberica25-full-jdk liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk maven gradle codeql vscode
+        scoop install liberica21-full-jdk liberica25-full-jdk liberica11-full-jdk liberica17-full-jdk liberica8-full-jdk
+        scoop install maven gradle
+        scoop install codeql
+        scoop install vscode
+        scoop cleanup *
         
     - name: 'Show scoop config'
       shell: pwsh
@@ -58,7 +59,7 @@ jobs:
       shell: pwsh
       run: |
         $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
-        & $env:SCOOP7z a -mx9 -t7z -snh -snl 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
         & $env:SCOOP7z l 'D:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
@@ -68,6 +69,7 @@ jobs:
         path: D:\00PackageManager.7z
         retention-days: 3
         compression-level: 0
+
 
 
 
