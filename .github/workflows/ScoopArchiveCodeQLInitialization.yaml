@@ -17,11 +17,7 @@ jobs:
         iwr -useb get.scoop.sh | iex
         scoop bucket add extras
         scoop bucket add versions
-        scoop bucket add nirsoft
         scoop bucket add java
-        scoop bucket add nonportable
-        scoop bucket add ktools https://github.com/kenyon-wong/ktools
-        scoop bucket add r-bucket https://github.com/cderv/r-bucket.git
         
         echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
 
@@ -72,5 +68,6 @@ jobs:
         path: D:\00PackageManager.7z
         retention-days: 3
         compression-level: 0
+
 
 
