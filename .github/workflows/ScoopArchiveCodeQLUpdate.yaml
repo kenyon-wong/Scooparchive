@@ -60,7 +60,7 @@ jobs:
       shell: pwsh
       run: |
         $env:SCOOP7z='D:\00PackageManager\Scoop\apps\7zip\current\7z.exe'
-        & $env:SCOOP7z a -mx9 -t7z -snh -snl 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
+        & $env:SCOOP7z a -mx9 -t7z 'D:\00PackageManager.7z' 'D:\00PackageManager\*'
         & $env:SCOOP7z l 'D:\00PackageManager.7z'
 
     - name: 'Upload Compressed Scoop Directory'
