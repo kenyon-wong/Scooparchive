@@ -51,53 +51,72 @@ jobs:
         scoop cache rm *
         scoop cleanup -k *
 
-    - name: 'Fix PATH and Install npm Agents'
+    - name: 'Install npm Agents (Force correct prefix)'
       shell: pwsh
       run: |
         # 获取 Scoop Node.js 路径
         $nodePath = Resolve-Path "$env:SCOOP\apps\nodejs-lts\current"
         $npmCmd = "$nodePath\npm.cmd"
         
-        # 创建新的 PATH（只保留系统必要路径 + Scoop）
-        $newPath = @(
-            "$env:SCOOP\shims",
-            "$nodePath",
-            "$env:SCOOP\npm-global",
-            "$env:SCOOP\npm-global\bin",
-            "$env:SystemRoot\System32",
-            "$env:SystemRoot",
-            "$env:SystemRoot\System32\Wbem"
-        ) -join ';'
-        
-        # 设置环境变量
-        $env:PATH = $newPath
-        echo "PATH=$newPath" >> $env:GITHUB_ENV
-        
-        # 现在 npm 命令会自动使用 Scoop 版本
+        # 设置正确的路径
         $npmPrefix = "$env:SCOOP\npm-global"
         $npmCache = "$env:SCOOP\npm-cache"
         
-        New-Item -ItemType Directory -Force -Path $npmPrefix
-        New-Item -ItemType Directory -Force -Path $npmCache
+        New-Item -ItemType Directory -Force -Path $npmPrefix | Out-Null
+        New-Item -ItemType Directory -Force -Path $npmCache | Out-Null
         
-        # 配置 npm
-        npm config set prefix $npmPrefix
-        npm config set cache $npmCache
+        # 关键：强制覆盖用户级 .npmrc
+        $userNpmrc = Join-Path $env:USERPROFILE '.npmrc'
+        @"
+        prefix=$npmPrefix
+        cache=$npmCache
+        "@ | Out-File -FilePath $userNpmrc -Encoding UTF8 -Force
+            
+            # 同时设置环境变量（最高优先级）
+            $env:NPM_CONFIG_PREFIX = $npmPrefix
+            $env:NPM_CONFIG_CACHE = $npmCache
+            echo "NPM_CONFIG_PREFIX=$npmPrefix" >> $env:GITHUB_ENV
+            echo "NPM_CONFIG_CACHE=$npmCache" >> $env:GITHUB_ENV
+            
+            # 配置 PATH
+            $newPath = @(
+                "$env:SCOOP\shims",
+                "$nodePath",
+                "$npmPrefix",
+                "$npmPrefix\bin",
+                "$env:SystemRoot\System32",
+                "$env:SystemRoot"
+            ) -join ';'
+        $env:PATH = $newPath
+        echo "PATH=$newPath" >> $env:GITHUB_ENV
         
-        Write-Host "Using npm: $(Get-Command npm).Source" -ForegroundColor Green
-        Write-Host "npm prefix: $(npm config get prefix)" -ForegroundColor Cyan
+        # 验证配置
+        Write-Host "User .npmrc location: $userNpmrc" -ForegroundColor Cyan
+        Write-Host "User .npmrc content:" -ForegroundColor Cyan
+        Get-Content $userNpmrc
+        
+        Write-Host "`nUsing npm: $npmCmd" -ForegroundColor Green
+        Write-Host "npm version: $(& $npmCmd --version)" -ForegroundColor Green
+        Write-Host "npm prefix: $(& $npmCmd config get prefix)" -ForegroundColor Green
+        Write-Host "npm cache: $(& $npmCmd config get cache)" -ForegroundColor Green
         
         # 安装包
-        npm install -g @mariozechner/pi-coding-agent
-        npm install -g @anthropic-ai/claude-code
-        npm install -g @openai/codex
+        Write-Host "`nInstalling packages..." -ForegroundColor Cyan
+        & $npmCmd install -g @mariozechner/pi-coding-agent
+        & $npmCmd install -g @anthropic-ai/claude-code
+        & $npmCmd install -g @openai/codex
         
-        # 验证
+        # 验证安装位置
         Write-Host "`n=== Verification ===" -ForegroundColor Green
         Write-Host "Node.js: $(node --version)"
         Write-Host "npm: $(npm --version)"
         Write-Host "npm prefix: $(npm config get prefix)"
-        npm list -g --depth=0
+        Write-Host "`nInstalled packages in $npmPrefix:" -ForegroundColor Cyan
+        Get-ChildItem $npmPrefix\node_modules -ErrorAction SilentlyContinue | Select-Object Name
+        
+        # 最终验证
+        Write-Host "`n=== npm global list ===" -ForegroundColor Cyan
+        & $npmCmd list -g --depth=0
 
     - name: 'Show installed packages'
       shell: pwsh
