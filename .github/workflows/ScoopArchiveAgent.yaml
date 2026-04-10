@@ -1,4 +1,4 @@
-name: 🔨 Scoop Archive Base
+name: 🔨 Scoop Archive Agent
 on:
   workflow_dispatch:
 
@@ -104,7 +104,7 @@ jobs:
     - name: 'Upload Compressed Environment'
       uses: actions/upload-artifact@v4
       with:
-        name: Scoop-Complete-Base
-        path: D:\ScoopCompleteBase.7z
+        name: Scoop-Complete-Agent
+        path: D:\ScoopCompleteAgent.7z
         retention-days: 3
         if-no-files-found: error
