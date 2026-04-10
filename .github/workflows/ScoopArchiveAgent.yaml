@@ -1,0 +1,110 @@
+name: 🔨 Scoop Archive Base
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest 
+    environment: dev
+    steps:
+    - name: 'Set up Scoop'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        mkdir "D:\00PackageManager\" -Force
+        $env:SCOOP='D:\00PackageManager\Scoop'
+        
+        # 持久化环境变量（关键修复）
+        echo "SCOOP=$env:SCOOP" >> $env:GITHUB_ENV
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+        
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'Machine')
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        
+        iwr -useb get.scoop.sh | iex
+        
+        # 添加 buckets
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+
+    - name: 'Setup Scoop aria2'
+      shell: pwsh 
+      run: |
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+ 
+    - name: 'Install Required Tools'
+      shell: pwsh 
+      run: |
+        scoop install -k innounp dark 
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cacert openssl-lts-light autocorrect fd 
+        scoop install -k nodejs-lts
+        scoop cache rm *
+        scoop cleanup -k *
+
+    - name: 'Install npm Agents (to Scoop directory)'
+      shell: pwsh 
+      run: |
+        # 重要：将 npm 全局包安装到 Scoop 目录内
+        npm config set prefix "$env:SCOOP\npm-global"
+        npm config set cache "$env:SCOOP\npm-cache"
+        
+        # 添加到 PATH 以便后续步骤使用
+        echo "$env:SCOOP\npm-global" >> $env:GITHUB_PATH
+        echo "$env:SCOOP\npm-global\bin" >> $env:GITHUB_PATH
+        
+        # 安装三个必需的 npm 包
+        npm install -g @mariozechner/pi-coding-agent
+        npm install -g @anthropic-ai/claude-code
+        npm install -g @openai/codex
+        
+        # 验证安装
+        Write-Host "=== npm packages installed ===" -ForegroundColor Green
+        npm list -g --depth=0
+
+    - name: 'Show installed packages'
+      shell: pwsh
+      run: |
+        Write-Host "=== Scoop packages ===" -ForegroundColor Cyan
+        scoop list
+        Write-Host "`n=== Scoop buckets ===" -ForegroundColor Cyan
+        scoop bucket list
+        Write-Host "`n=== npm global packages ===" -ForegroundColor Cyan
+        npm list -g --depth=0
+        Write-Host "`n=== Scoop config ===" -ForegroundColor Cyan
+        scoop config
+
+    - name: 'Compress Complete Environment'
+      shell: pwsh
+      run: |
+        # 使用系统自带的 7z（更可靠）
+        $7zPath = & {
+          if (Test-Path "C:\Program Files\7-Zip\7z.exe") { "C:\Program Files\7-Zip\7z.exe" }
+          elseif (Get-Command 7z.exe -ErrorAction SilentlyContinue) { (Get-Command 7z.exe).Source }
+          else { throw "7z not found" }
+        }
+        
+        Write-Host "Using 7z: $7zPath" -ForegroundColor Green
+        
+        # 打包整个目录（包含所有 Scoop + npm 全局包）
+        & $7zPath a -mx5 -t7z -r 'D:\ScoopCompleteBase.7z' 'D:\00PackageManager\*'
+        
+        # 显示压缩包信息
+        & $7zPath l 'D:\ScoopCompleteBase.7z'
+
+    - name: 'Upload Compressed Environment'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Scoop-Complete-Base
+        path: D:\ScoopCompleteBase.7z
+        retention-days: 3
+        if-no-files-found: error
