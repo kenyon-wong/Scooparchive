@@ -51,41 +51,53 @@ jobs:
         scoop cache rm *
         scoop cleanup -k *
 
-    - name: 'Install npm Agents (to Scoop directory)'
+    - name: 'Fix PATH and Install npm Agents'
       shell: pwsh
       run: |
-        # 强制创建并设置 npm 全局路径
+        # 获取 Scoop Node.js 路径
+        $nodePath = Resolve-Path "$env:SCOOP\apps\nodejs-lts\current"
+        $npmCmd = "$nodePath\npm.cmd"
+        
+        # 创建新的 PATH（只保留系统必要路径 + Scoop）
+        $newPath = @(
+            "$env:SCOOP\shims",
+            "$nodePath",
+            "$env:SCOOP\npm-global",
+            "$env:SCOOP\npm-global\bin",
+            "$env:SystemRoot\System32",
+            "$env:SystemRoot",
+            "$env:SystemRoot\System32\Wbem"
+        ) -join ';'
+        
+        # 设置环境变量
+        $env:PATH = $newPath
+        echo "PATH=$newPath" >> $env:GITHUB_ENV
+        
+        # 现在 npm 命令会自动使用 Scoop 版本
         $npmPrefix = "$env:SCOOP\npm-global"
         $npmCache = "$env:SCOOP\npm-cache"
         
         New-Item -ItemType Directory -Force -Path $npmPrefix
         New-Item -ItemType Directory -Force -Path $npmCache
         
-        # 使用 npm 命令设置（注意：必须提前设置环境变量）
-        npm config set prefix $npmPrefix --global
-        npm config set cache $npmCache --global
+        # 配置 npm
+        npm config set prefix $npmPrefix
+        npm config set cache $npmCache
         
-        # 验证设置是否生效
+        Write-Host "Using npm: $(Get-Command npm).Source" -ForegroundColor Green
         Write-Host "npm prefix: $(npm config get prefix)" -ForegroundColor Cyan
-        Write-Host "npm cache: $(npm config get cache)" -ForegroundColor Cyan
         
-        # 临时修改当前会话的环境变量（确保 npm install -g 使用正确路径）
-        $env:NPM_CONFIG_PREFIX = $npmPrefix
-        $env:NPM_CONFIG_CACHE = $npmCache
-        
-        # 添加到系统 PATH
-        [Environment]::SetEnvironmentVariable('Path', "$env:Path;$npmPrefix;$npmPrefix\bin", 'Machine')
-        echo "$npmPrefix" >> $env:GITHUB_PATH
-        echo "$npmPrefix\bin" >> $env:GITHUB_PATH
-        
-        # 安装 npm 包
+        # 安装包
         npm install -g @mariozechner/pi-coding-agent
         npm install -g @anthropic-ai/claude-code
         npm install -g @openai/codex
         
-        # 验证安装位置
-        Write-Host "`n=== Installed packages location ===" -ForegroundColor Green
-        Get-ChildItem $npmPrefix\node_modules -ErrorAction SilentlyContinue | Select-Object Name
+        # 验证
+        Write-Host "`n=== Verification ===" -ForegroundColor Green
+        Write-Host "Node.js: $(node --version)"
+        Write-Host "npm: $(npm --version)"
+        Write-Host "npm prefix: $(npm config get prefix)"
+        npm list -g --depth=0
 
     - name: 'Show installed packages'
       shell: pwsh
