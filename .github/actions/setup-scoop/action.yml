@@ -1,0 +1,60 @@
+name: 'Setup Scoop Environment'
+description: 'Install Scoop, register buckets, setup aria2, and install base CLI tools'
+
+inputs:
+  variant:
+    description: 'Build variant (base | codeql | python | agent | cloud | pro)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Install Scoop'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        mkdir "D:\00PackageManager\" -Force
+        $env:SCOOP='D:\00PackageManager\Scoop'
+
+        # 持久化环境变量到后续 step
+        echo "SCOOP=$env:SCOOP" >> $env:GITHUB_ENV
+        echo "$env:SCOOP\shims" >> $env:GITHUB_PATH
+
+        [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'Machine')
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        iwr -useb get.scoop.sh | iex
+
+    - name: 'Register Scoop Buckets'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop bucket add nirsoft
+        scoop bucket add java
+        scoop bucket add nonportable
+        scoop bucket add ktools https://github.com/kenyon-wong/ktools
+
+        # r-bucket: 仅 codeql / python / pro 需要
+        if ("${{ inputs.variant }}" -in @('codeql', 'python', 'pro')) {
+          scoop bucket add r-bucket https://github.com/cderv/r-bucket.git
+        }
+
+    - name: 'Setup Scoop aria2 + Core Tools'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        scoop install -k aria2 sudo git 7zip
+        scoop config aria2-warning-enabled false
+        scoop config aria2-enabled true
+        scoop config aria2-retry-wait 4
+        scoop config aria2-split 16
+        scoop config aria2-max-connection-per-server 16
+        scoop config aria2-min-split-size 4M
+
+    - name: 'Install Base CLI Tools'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        scoop install -k innounp dark
+        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cacert openssl-lts-light autocorrect fd

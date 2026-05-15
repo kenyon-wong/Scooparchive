@@ -1,0 +1,182 @@
+name: 🔨 Scoop Archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: '选择构建变体'
+        required: true
+        type: choice
+        default: 'base'
+        options:
+          - base       # 基础 CLI 工具集
+          - codeql     # CodeQL 静态分析环境
+          - python     # Python 安全工具环境
+          - agent      # AI Coding Agent 环境
+          - cloud      # 云桌面应用集
+          - pro        # 完整环境（包含以上全部）
+
+jobs:
+  build:
+    runs-on: ${{ (inputs.variant == 'codeql' || inputs.variant == 'pro') && 'windows-2025' || 'windows-latest' }}
+    environment: dev
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      # ── 共享基础设施（composite action）──────────────────────────
+      - name: 'Setup Scoop Environment'
+        uses: ./.github/actions/setup-scoop
+        with:
+          variant: ${{ inputs.variant }}
+
+      # ── 变体层：CodeQL ──────────────────────────────────────────
+      - name: 'Install CodeQL + JDKs + Build Tools'
+        if: contains('codeql,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop install -k liberica8-full-jdk liberica11-full-jdk liberica17-full-jdk liberica-full-jdk
+          scoop install -k gradle maven jenv
+          scoop install -k codeql vscode
+
+      - name: 'Clone CodeQL Repositories'
+        if: contains('codeql,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git clone --depth 1 'https://github.com/github/vscode-codeql-starter.git' 'D:\00PackageManager\vscode-codeql-starter'
+          git clone --depth 1 'https://github.com/github/codeql.git' 'D:\00PackageManager\CodeqlRules'
+
+      # ── 变体层：Python ──────────────────────────────────────────
+      - name: 'Install Python'
+        if: contains('python,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop install -k python
+          echo "SCOOP_PY=$env:SCOOP\apps\python\current\python.exe" >> $env:GITHUB_ENV
+          echo "$env:SCOOP\apps\python\current\Scripts" >> $env:GITHUB_PATH
+
+      - name: 'Install Pip Packages'
+        if: contains('python,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & $env:SCOOP_PY -m pip install --upgrade pip
+          & $env:SCOOP_PY -m pip install -r requirements.txt
+          git clone --depth 1 https://github.com/r0oth3x49/ghauri.git D:\00PackageManager\ghauri
+          & $env:SCOOP_PY -m pip install -r D:\00PackageManager\ghauri\requirements.txt
+          & $env:SCOOP_PY -m pip freeze
+
+      # ── 变体层：Agent ───────────────────────────────────────────
+      - name: 'Install Node.js + npm Agents'
+        if: contains('agent,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop install -k nodejs-lts main/ripgrep main/rtk
+
+          $nodePath = Resolve-Path "$env:SCOOP\apps\nodejs-lts\current"
+          $npmCmd = "$nodePath\npm.cmd"
+          $npmPrefix = "$env:SCOOP\npm-global"
+          $npmCache  = "$env:SCOOP\npm-cache"
+
+          New-Item -ItemType Directory -Force -Path $npmPrefix | Out-Null
+          New-Item -ItemType Directory -Force -Path $npmCache  | Out-Null
+
+          # 强制覆盖用户级 .npmrc
+          $userNpmrc = Join-Path $env:USERPROFILE '.npmrc'
+          @"
+          prefix=$npmPrefix
+          cache=$npmCache
+          "@ | Out-File -FilePath $userNpmrc -Encoding UTF8 -Force
+
+          $env:NPM_CONFIG_PREFIX = $npmPrefix
+          $env:NPM_CONFIG_CACHE  = $npmCache
+          echo "NPM_CONFIG_PREFIX=$npmPrefix" >> $env:GITHUB_ENV
+          echo "NPM_CONFIG_CACHE=$npmCache"   >> $env:GITHUB_ENV
+
+          # 配置 PATH
+          $newPath = @(
+            "$env:SCOOP\shims",
+            "$nodePath",
+            "$npmPrefix",
+            "$npmPrefix\bin",
+            "$env:SystemRoot\System32",
+            "$env:SystemRoot"
+          ) -join ';'
+          $env:PATH = $newPath
+          echo "PATH=$newPath" >> $env:GITHUB_ENV
+
+          & $npmCmd install -g @earendil-works/pi-coding-agent
+          & $npmCmd install -g @anthropic-ai/claude-code
+          & $npmCmd install -g @openai/codex
+
+      # ── 变体层：Cloud Desktop ───────────────────────────────────
+      - name: 'Install Cloud Desktop Apps'
+        if: contains('cloud,pro', inputs.variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop install -k cwrsync sourcegit
+          scoop install -k burp-suite-pro-np
+          scoop install -k anew apktool blueteamtools chromedriver chsrc cmake colortool crawlergo
+          scoop install -k dotnet-sdk-lts dotnet3-sdk dupeGuru etcd
+          scoop install -k exiftool ffmpeg ffuf fofax fscan fscapture gcc git-lfs go gogo
+          scoop install -k googlechrome gpg gui-for-clash hadolint hashcat
+          scoop install -k honeyview imagemagick keepassxc ksubdomain kubectl Ldap-admin lefthook
+          scoop install -k make masscode netspy nircmd nuget obsidian office-tool-plus onefetch openark oss-browser osv-scanner pandoc
+          scoop install -k pdtm peazip picgo pixpin rad renamer ruby rufus rust rust-msvc rustup-msvc s3browser scoop-search
+          scoop install -k screentogif sharex shellcheck SpaceSniffer spray sqlitestudio ssh-config sslscan
+          scoop install -k sumatrapdf sysinternals TrafficMonitor UniGetUI
+          scoop install -k vcredist2010 vcredist2012 vcredist2013 vncviewer vscodium xmlnotepad yara yarn zombie zotero
+
+      # ── 变体层：Pro Extras（仅 pro，不与其他层重叠的包）─────────
+      - name: 'Install Pro Extras'
+        if: inputs.variant == 'pro'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop install -k liberica16-full-jdk
+          scoop install -k jadx idea-ultimate
+          scoop install -k extras/tableplus
+          scoop install -k osv-scanner
+          scoop install -k extras/sublime-text vscode obsidian xmlnotepad sumatrapdf
+          scoop install -k keepassxc openark kubectl sslscan sqlitestudio keepass-plugin-keepassrpc colortool etcd
+          scoop install -k everything-cli powertoys snipaste
+          scoop install -k vcredist2022
+          scoop install -k windowsdesktop-runtime-lts windows-terminal firefox googlechrome
+          scoop install -k nonportable/burp-suite-pro-np@2024.5
+
+      # ── 收尾：清理 + 展示 + 压缩 + 上传 ────────────────────────
+      - name: 'Cleanup & Show Configuration'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          scoop cache rm *
+          scoop cleanup -k *
+          Write-Host "=== Scoop packages ===" -ForegroundColor Cyan
+          scoop list
+          Write-Host "`n=== Scoop buckets ===" -ForegroundColor Cyan
+          scoop bucket list
+          Write-Host "`n=== Scoop config ===" -ForegroundColor Cyan
+          scoop config
+
+      - name: 'Compress Artifact'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $archive = "D:\Scoop-${{ inputs.variant }}.7z"
+          & "$env:SCOOP\apps\7zip\current\7z.exe" a -mx9 -t7z $archive 'D:\00PackageManager\*'
+          & "$env:SCOOP\apps\7zip\current\7z.exe" l $archive
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Scoop-${{ inputs.variant }}-${{ github.run_id }}
+          path: D:\Scoop-${{ inputs.variant }}.7z
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
