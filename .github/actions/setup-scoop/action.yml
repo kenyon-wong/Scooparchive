@@ -52,9 +52,67 @@ runs:
         scoop config aria2-max-connection-per-server 16
         scoop config aria2-min-split-size 4M
 
-    - name: 'Install Base CLI Tools'
+    - name: 'Install Base Tools'
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        scoop install -k innounp dark
-        scoop install -k biome jq yq vim curl wget base64 gawk grep sed less touch which cacert openssl-lts-light autocorrect fd
+
+        # ============================================================
+        # Retry helper — exponential backoff (10s → 20s → 40s)
+        # Non-critical packages skip on failure instead of aborting
+        # ============================================================
+        function Invoke-ScoopRetry {
+          param(
+            [string[]]$Packages,
+            [int]$MaxRetries = 3,
+            [int]$BaseDelaySec = 10,
+            [bool]$ContinueOnError = $false
+          )
+          $failed = @()
+          foreach ($pkg in $Packages) {
+            $attempt = 0; $ok = $false
+            while ($attempt -lt $MaxRetries -and -not $ok) {
+              $attempt++
+              try {
+                scoop install -k $pkg 2>&1 | Out-Host
+                if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+                $ok = $true
+                Write-Host "  [OK] $pkg" -ForegroundColor Green
+              } catch {
+                Write-Warning "  Attempt $attempt/$MaxRetries for '$pkg': $_"
+                if ($attempt -lt $MaxRetries) {
+                  $delay = $BaseDelaySec * [Math]::Pow(2, $attempt - 1)
+                  Write-Host "  Retrying in ${delay}s ..."
+                  # Clear stale cache so retry fetches fresh
+                  scoop cache rm $pkg 2>$null
+                  Start-Sleep -Seconds $delay
+                }
+              }
+            }
+            if (-not $ok) {
+              if ($ContinueOnError) {
+                Write-Warning "  SKIPPED: '$pkg' failed after $MaxRetries retries."
+                $failed += $pkg
+              } else {
+                throw "FATAL: '$pkg' failed after $MaxRetries retries."
+              }
+            }
+          }
+          if ($failed.Count -gt 0) {
+            Write-Warning "Non-critical packages skipped ($($failed.Count)): $($failed -join ', ')"
+          }
+        }
+
+        # === Required unpackers (retry 3x, fail on exhaustion) ===
+        Write-Host "`n=== Installing required unpackers ===" -ForegroundColor Cyan
+        Invoke-ScoopRetry -Packages @('innounp', 'dark') -ContinueOnError:$false
+
+        # === CLI tools (retry 3x, skip on exhaustion)
+        # wget removed — curl.exe is built into Windows; the "wget" alias
+        # in PowerShell maps to Invoke-WebRequest, so no functionality is lost.
+        # ===============================================================
+        Write-Host "`n=== Installing CLI tools ===" -ForegroundColor Cyan
+        Invoke-ScoopRetry -Packages @(
+          'biome','jq','yq','vim','curl','base64','gawk','grep','sed',
+          'less','touch','which','cacert','openssl-lts-light','autocorrect','fd'
+        ) -ContinueOnError:$true
